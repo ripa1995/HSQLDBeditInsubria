@@ -956,6 +956,10 @@ public class Session implements SessionInterface {
 
         parser.reset(this, sql);
 
+        if(sql.equalsIgnoreCase("EXPLAIN PLAN FOR SELECT * FROM \"PUBLIC\".\"NUMERI\"")){
+            System.out.println("Session.compileStatement");
+        }
+
         Statement cs =
             parser.compileStatement(ResultProperties.defaultPropsValue);
 
@@ -1264,7 +1268,9 @@ public class Session implements SessionInterface {
 
             cs.setGeneratedColumnInfo(cmd.getGeneratedResultType(),
                                       cmd.getGeneratedResultMetaData());
-
+            if (cs.sql.equalsIgnoreCase("EXPLAIN PLAN FOR SELECT * FROM \"PUBLIC\".\"NUMERI\"")){
+                System.out.println("Session.executeDirectStatement");
+            }
             result = executeCompiledStatement(cs, ValuePool.emptyObjectArray,
                                               cmd.queryTimeout);
 

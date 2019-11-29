@@ -289,7 +289,7 @@ public class LobManager {
     }
 
     public void compileStatements() {
-
+        //CREATE PLAN??
         writeLock.lock();
 
         try {

@@ -211,6 +211,10 @@ public class QueryExpression implements RangeGroup {
 
     public void resolve(Session session, RangeGroup[] rangeGroups,
                         Type[] targetTypes) {
+        if (this.compileContext.parser.scanner.sqlString.equalsIgnoreCase("EXPLAIN PLAN FOR SELECT * FROM \"PUBLIC\".\"NUMERI\"")) {
+            System.out.println("QueryExpression.resolve");
+        }
+
 
         resolveReferences(session, rangeGroups);
         ExpressionColumn.checkColumnsResolved(unresolvedExpressions);

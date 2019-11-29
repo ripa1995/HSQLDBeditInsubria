@@ -1,4 +1,4 @@
-module org.hsqldb {
+/*module org.hsqldb {
    exports org.hsqldb.auth;
    exports org.hsqldb.jdbc;
    exports org.hsqldb.jdbc.pool;
@@ -13,4 +13,4 @@ module org.hsqldb {
    requires java.naming;
    requires java.sql;
    requires java.xml;
-}
+}*/

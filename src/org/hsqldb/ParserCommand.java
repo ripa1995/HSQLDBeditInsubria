@@ -79,6 +79,10 @@ public class ParserCommand extends ParserDDL {
 
     HsqlArrayList compileStatements(String sql, Result cmd) {
 
+        if (sql.equalsIgnoreCase("EXPLAIN PLAN FOR SELECT * FROM \"PUBLIC\".\"NUMERI\"")){
+            System.out.println("ParserCommand.compileStatements");
+        }
+
         HsqlArrayList list = new HsqlArrayList();
         Statement     cs   = null;
 
@@ -2584,6 +2588,10 @@ public class ParserCommand extends ParserDDL {
     }
 
     private Statement compileExplainPlan() {
+
+        if (this.scanner.sqlString.equalsIgnoreCase("EXPLAIN PLAN FOR SELECT * FROM \"PUBLIC\".\"NUMERI\"")) {
+            System.out.println("ParserCommand.compileExplainPlan");
+        }
 
         Statement cs;
 
