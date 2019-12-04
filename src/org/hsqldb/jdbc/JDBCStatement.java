@@ -146,7 +146,14 @@ public class JDBCStatement extends JDBCStatementBase implements Statement,
         return getResultSet();
     }
 
-    //TODO: create method similar to executeQuery that calls new session method
+
+    public synchronized ResultSet getExecutionPlan(
+            String sql) throws SQLException {
+            //TODO: call fetchResult using new StatementTypes type (still not created)
+
+        return getResultSet();
+    }
+
 
     /**
      * <!-- start generic documentation -->

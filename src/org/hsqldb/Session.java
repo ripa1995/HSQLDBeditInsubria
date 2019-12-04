@@ -974,6 +974,8 @@ public class Session implements SessionInterface {
      * @param cmd the command to execute
      * @return the result of executing the command
      */
+
+    //TODO: add cmd.mode == getExecutionPlan
     public synchronized Result execute(Result cmd) {
 
         if (isClosed) {
