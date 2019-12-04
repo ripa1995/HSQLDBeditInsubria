@@ -1223,7 +1223,54 @@ public class Session implements SessionInterface {
     }
 
 
-    //TODO: create similar method to executeDirectStatement that return HsqlArrayList
+    public HsqlArrayList getCompiledStatement(Result cmd) {
+        String sql = cmd.getMainString();
+        HsqlArrayList list;
+        int maxRows = cmd.getUpdateCount();
+
+        if (maxRows == -1) {
+            sessionContext.currentMaxRows = 0;
+        } else if (sessionMaxRows == 0) {
+            sessionContext.currentMaxRows = maxRows;
+        } else {
+            sessionContext.currentMaxRows = sessionMaxRows;
+            sessionMaxRows = 0;
+        }
+
+        try {
+            list = parser.compileStatements(sql, cmd);
+        } catch (Throwable e) {
+            return null;
+        }
+
+        /* RR 20191204 Should we consider multiple statement executed in the same session?
+        boolean recompile = false;
+        HsqlName originalSchema = getCurrentSchemaHsqlName();
+
+        for (int i = 0; i < list.size(); i++) {
+            Statement cs = (Statement) list.get(i);
+
+            if (i > 0) {
+                if (cs.getCompileTimestamp()
+                        > database.txManager.getGlobalChangeTimestamp()) {
+                    recompile = true;
+                }
+                if (cs.getSchemaName() != null
+                        && cs.getSchemaName() != originalSchema) {
+                    recompile = true;
+                }
+            }
+
+            if (recompile) {
+                cs = compileStatement(cs.getSQL(), cmd.getExecuteProperties());
+            }
+
+            cs.setGeneratedColumnInfo(cmd.getGeneratedResultType(),
+                    cmd.getGeneratedResultMetaData());
+        }
+        */
+        return list;
+    }
 
     public Result executeDirectStatement(Result cmd) {
 
