@@ -1222,6 +1222,9 @@ public class Session implements SessionInterface {
         sessionData.closeNavigator(id);
     }
 
+
+    //TODO: create similar method to executeDirectStatement that return HsqlArrayList
+
     public Result executeDirectStatement(Result cmd) {
 
         String        sql = cmd.getMainString();

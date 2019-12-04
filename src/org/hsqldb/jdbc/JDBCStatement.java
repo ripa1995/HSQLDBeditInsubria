@@ -146,6 +146,8 @@ public class JDBCStatement extends JDBCStatementBase implements Statement,
         return getResultSet();
     }
 
+    //TODO: create method similar to executeQuery that calls new session method
+
     /**
      * <!-- start generic documentation -->
      * Executes the given SQL statement, which may be an <code>INSERT</code>,

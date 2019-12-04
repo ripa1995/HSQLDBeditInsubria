@@ -1,4 +1,5 @@
 import org.hsqldb.Statement;
+import org.hsqldb.jdbc.JDBCStatement;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -19,8 +20,8 @@ public class Test{
             Connection c = DriverManager.getConnection("jdbc:hsqldb:file:data\\test", "SA", "");
             System.out.println("Connected");
             ResultSet resultSet;
-            java.sql.Statement statement = c.createStatement();
-            resultSet= statement.executeQuery("EXPLAIN PLAN FOR SELECT * FROM \"PUBLIC\".\"NUMERI\"");
+            JDBCStatement statement = (JDBCStatement) c.createStatement();
+            resultSet= statement.executeQuery("SELECT 'a' FROM \"PUBLIC\".\"NUMERI\"");
             while (resultSet.next()){
                 System.out.println(resultSet.getObject(1).toString());
             }
