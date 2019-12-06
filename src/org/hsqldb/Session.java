@@ -72,6 +72,8 @@ import org.hsqldb.types.TimestampData;
 import org.hsqldb.types.Type;
 import org.hsqldb.types.TypedComparator;
 
+import javax.management.QueryExp;
+
 /**
  * Implementation of SQL sessions.
  *
@@ -975,7 +977,7 @@ public class Session implements SessionInterface {
      * @return the result of executing the command
      */
 
-    //TODO: add cmd.mode == getExecutionPlan
+
     public synchronized Result execute(Result cmd) {
 
         if (isClosed) {
@@ -1035,12 +1037,18 @@ public class Session implements SessionInterface {
 
                 return result;
             }
+            //RR 20191206 check if statement require the plan
             case ResultConstants.EXECDIRECT : {
-                Result result = executeDirectStatement(cmd);
+                Result result = null;
+                if (cmd.getStatementType()==StatementTypes.RETURN_PLAN){
+                    getCompiledStatement(cmd);
+                } else {
+                    result = executeDirectStatement(cmd);
 
-                result = performPostExecute(cmd, result);
-
+                    result = performPostExecute(cmd, result);
+                }
                 return result;
+
             }
             case ResultConstants.BATCHEXECDIRECT : {
                 isBatch = true;
@@ -1225,54 +1233,6 @@ public class Session implements SessionInterface {
     }
 
 
-    public HsqlArrayList getCompiledStatement(Result cmd) {
-        String sql = cmd.getMainString();
-        HsqlArrayList list;
-        int maxRows = cmd.getUpdateCount();
-
-        if (maxRows == -1) {
-            sessionContext.currentMaxRows = 0;
-        } else if (sessionMaxRows == 0) {
-            sessionContext.currentMaxRows = maxRows;
-        } else {
-            sessionContext.currentMaxRows = sessionMaxRows;
-            sessionMaxRows = 0;
-        }
-
-        try {
-            list = parser.compileStatements(sql, cmd);
-        } catch (Throwable e) {
-            return null;
-        }
-
-        /* RR 20191204 Should we consider multiple statement executed in the same session?
-        boolean recompile = false;
-        HsqlName originalSchema = getCurrentSchemaHsqlName();
-
-        for (int i = 0; i < list.size(); i++) {
-            Statement cs = (Statement) list.get(i);
-
-            if (i > 0) {
-                if (cs.getCompileTimestamp()
-                        > database.txManager.getGlobalChangeTimestamp()) {
-                    recompile = true;
-                }
-                if (cs.getSchemaName() != null
-                        && cs.getSchemaName() != originalSchema) {
-                    recompile = true;
-                }
-            }
-
-            if (recompile) {
-                cs = compileStatement(cs.getSQL(), cmd.getExecuteProperties());
-            }
-
-            cs.setGeneratedColumnInfo(cmd.getGeneratedResultType(),
-                    cmd.getGeneratedResultMetaData());
-        }
-        */
-        return list;
-    }
 
     public Result executeDirectStatement(Result cmd) {
 
@@ -2398,6 +2358,44 @@ public class Session implements SessionInterface {
     String getSetSchemaStatement() {
         return "SET SCHEMA " + currentSchema.statementName;
     }
+
+    //RR 20191206 compile statement
+
+    private HsqlArrayList getCompiledStatement(Result cmd) {
+        String sql = cmd.getMainString();
+        HsqlArrayList list;
+        int maxRows = cmd.getUpdateCount();
+
+        if (maxRows == -1) {
+            sessionContext.currentMaxRows = 0;
+        } else if (sessionMaxRows == 0) {
+            sessionContext.currentMaxRows = maxRows;
+        } else {
+            sessionContext.currentMaxRows = sessionMaxRows;
+            sessionMaxRows = 0;
+        }
+
+        try {
+            list = parser.compileStatements(sql, cmd);
+        } catch (Throwable e) {
+            return null;
+        }
+
+        for (int i = 0; i < list.size(); i++) {
+            StatementQuery cs = (StatementQuery) list.get(i);
+            QueryExpression queryExpression = cs.queryExpression;
+            QuerySpecification querySpecification = cs.queryExpression.getMainSelect();
+            String[] strings = querySpecification.getColumnNames();
+            for (String s:strings) {
+                System.out.println(s);
+            }
+
+        }
+
+
+        return list;
+    }
+
 
     // timeouts
     class TimeoutManager {
