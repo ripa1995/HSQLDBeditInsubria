@@ -146,15 +146,6 @@ public class JDBCStatement extends JDBCStatementBase implements Statement,
         return getResultSet();
     }
 
-
-    public synchronized ResultSet getExecutionPlan(
-            String sql) throws SQLException {
-            //TODO: call fetchResult using new StatementTypes type (still not created)
-
-        return getResultSet();
-    }
-
-
     /**
      * <!-- start generic documentation -->
      * Executes the given SQL statement, which may be an <code>INSERT</code>,
@@ -2081,5 +2072,13 @@ public class JDBCStatement extends JDBCStatementBase implements Statement,
                    == StatementTypes.RETURN_RESULT) {
             getMoreResults();
         }
+    }
+
+    public synchronized ResultSet getExecutionPlan(
+            String sql) throws SQLException {
+        fetchResult(sql, StatementTypes.RETURN_PLAN,
+                JDBCStatementBase.NO_GENERATED_KEYS, null, null);
+
+        return getResultSet();
     }
 }
