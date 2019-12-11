@@ -2361,7 +2361,7 @@ public class Session implements SessionInterface {
 
     //RR 20191206 compile statement
 
-    private HsqlArrayList getCompiledStatement(Result cmd) {
+    private Result getCompiledStatement(Result cmd) {
         String sql = cmd.getMainString();
         HsqlArrayList list;
         int maxRows = cmd.getUpdateCount();
@@ -2385,15 +2385,41 @@ public class Session implements SessionInterface {
             StatementQuery cs = (StatementQuery) list.get(i);
             QueryExpression queryExpression = cs.queryExpression;
             QuerySpecification querySpecification = cs.queryExpression.getMainSelect();
-            String[] strings = querySpecification.getColumnNames();
+            String[] strings = querySpecification.getFullColumnNames(this);
+            String string;
+            //TODO
+            System.out.println("Column returned:");
             for (String s:strings) {
-                System.out.println(s);
+                System.out.println(s.replaceAll("\\R+", " "));
+            }
+            strings = querySpecification.getGroupedColumns(this);
+            if (strings!=null) {
+                System.out.println("Grouped column:");
+                for (String s : strings) {
+                    System.out.println(s);
+                }
+                string = querySpecification.getHavingConditions(this);
+                if (string!=null){
+                    System.out.println("Having condition:");
+                    System.out.println(string);
+                }
+            }
+            TableDerived[] subqueries = cs.getSubqueries(this);
+            if (subqueries!=null&&subqueries.length>0) {
+                System.out.println("Column in subqueries:");
+                for (int j = 0; j < subqueries.length; j++) {
+                    System.out.println("Subquery level: " + subqueries[j].depth);
+                    strings = subqueries[j].queryExpression.getMainSelect().getFullColumnNames(this);
+                    for (String s : strings) {
+                        System.out.println(s);
+                    }
+                }
             }
 
         }
 
 
-        return list;
+        return null;
     }
 
 
