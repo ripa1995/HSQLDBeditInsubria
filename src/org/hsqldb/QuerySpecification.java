@@ -2671,4 +2671,58 @@ public class QuerySpecification extends QueryExpression {
 
         return true;
     }
+
+    //RR20191211
+
+    public String[] getFullColumnNames(Session session) {
+
+        String[] names = new String[indexLimitVisible];
+
+        for (int i = 0; i < indexLimitVisible; i++) {
+            int index = i;
+
+            if (exprColumns[i].getType() == OpTypes.SIMPLE_COLUMN) {
+                index = exprColumns[i].columnIndex;
+            }
+
+            names[i] = exprColumns[index].describe(session, 0).trim();
+
+            if (resultMetaData.columns[i].getNullability()
+                    == SchemaObject.Nullability.NO_NULLS) {
+                names[i]=names[i]+" not nullable";
+            } else {
+                names[i]=names[i]+" nullable";
+            }
+        }
+
+        return names;
+
+    }
+
+    public String[] getGroupedColumns(Session session){
+        String[] names=null;
+        if (isGrouped) {
+            names = new String[indexLimitRowId+groupByColumnCount];
+            for (int i = indexLimitRowId;
+                 i < indexLimitRowId + groupByColumnCount; i++) {
+                int index = i;
+
+                if (exprColumns[i].getType() == OpTypes.SIMPLE_COLUMN) {
+                    index = exprColumns[i].columnIndex;
+                }
+
+                names[i]=exprColumns[index].describe(session,0).trim();
+            }
+        }
+        return names;
+    }
+
+    public String getHavingConditions(Session session){
+        String s = null;
+        if (havingCondition != null) {
+            s = havingCondition.describe(session, 0);
+        }
+        return s;
+    }
+
 }
