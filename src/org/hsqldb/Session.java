@@ -72,8 +72,6 @@ import org.hsqldb.types.TimestampData;
 import org.hsqldb.types.Type;
 import org.hsqldb.types.TypedComparator;
 
-import javax.management.QueryExp;
-
 /**
  * Implementation of SQL sessions.
  *
@@ -1041,7 +1039,7 @@ public class Session implements SessionInterface {
             case ResultConstants.EXECDIRECT : {
                 Result result = null;
                 if (cmd.getStatementType()==StatementTypes.RETURN_PLAN){
-                    getCompiledStatement(cmd);
+                    compileAndGetJSON(cmd);
                 } else {
                     result = executeDirectStatement(cmd);
 
@@ -2361,7 +2359,7 @@ public class Session implements SessionInterface {
 
     //RR 20191206 compile statement
 
-    private Result getCompiledStatement(Result cmd) {
+    private Result compileAndGetJSON(Result cmd) {
         String sql = cmd.getMainString();
         HsqlArrayList list;
         int maxRows = cmd.getUpdateCount();
@@ -2384,7 +2382,8 @@ public class Session implements SessionInterface {
         for (int i = 0; i < list.size(); i++) {
             StatementQuery cs = (StatementQuery) list.get(i);
             QueryExpression queryExpression = cs.queryExpression;
-            QuerySpecification querySpecification = cs.queryExpression.getMainSelect();
+            System.out.println(cs.describeJSONlike(this));
+            /*QuerySpecification querySpecification = cs.queryExpression.getMainSelect();
             String[] strings = querySpecification.getFullColumnNames(this);
             String string;
             //TODO
@@ -2415,6 +2414,13 @@ public class Session implements SessionInterface {
                     }
                 }
             }
+            RangeVariable[] rangeVariables = querySpecification.getRangeVariables();
+            if (rangeVariables!=null){
+                System.out.println("Range variable");
+                for (RangeVariable rangeVariable:rangeVariables){
+                    System.out.println(rangeVariable.getConditions(this).trim());
+                }
+            }*/
 
         }
 
