@@ -2112,7 +2112,7 @@ public class Expression implements Cloneable {
             case OpTypes.TABLE_SUBQUERY :
                 sb.append("{OPTYPE:SUBQUERY");
                 sb.append(",VALUE:");
-                sb.append(table.queryExpression.describe(session,0));
+                sb.append(table.queryExpression.describeJSONlike(session));
 
                 return sb.append("}").toString();
 
