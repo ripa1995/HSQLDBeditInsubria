@@ -744,4 +744,264 @@ public abstract class StatementDMQL extends Statement {
     public void clearStructures(Session session) {
         session.sessionContext.clearStructures(this);
     }
+
+    /**
+     * Retrieves a JSON like representation of this object.
+     */
+    public String describeJSONlike(Session session) {
+
+        try {
+            return describeJSONImpl(session);
+        } catch (Throwable e) {
+            e.printStackTrace();
+
+            return e.toString();
+        }
+    }
+
+    /**
+     * Provides the toString() implementation in json like.
+     */
+    String describeJSONImpl(Session session) throws Exception {
+
+        StringBuilder sb     = new StringBuilder();
+
+        switch (type) {
+
+            case StatementTypes.SELECT_CURSOR : {
+                sb.append("{SELECT:[");
+                sb.append(queryExpression.describeJSONlike(session));
+                sb.append(",");
+                appendParamsJSONlike(sb);
+                sb.append(",");
+                appendSubqueriesJSONlike(session, sb);
+                sb.append("]}");
+                return sb.toString();
+            }
+            case StatementTypes.INSERT : {
+                if (queryExpression == null) {
+                    sb.append("{INSERT_VALUES:[");
+                    appendMultiColumnsJSONlike(sb, insertColumnMap);
+                    sb.append(",");
+                    appendTableJSONlike(sb);
+                    sb.append(",");
+                    appendParamsJSONlike(sb);
+                    sb.append(",");
+                    appendSubqueriesJSONlike(session, sb).append("]}");
+
+                    return sb.toString();
+                } else {
+                    sb.append("{INSERT_SELECT:[");
+                    appendColumnsJSONlike(sb, insertColumnMap);
+                    sb.append(",");
+                    appendTableJSONlike(sb);
+                    sb.append(",");
+                    sb.append(queryExpression.describeJSONlike(session));
+                    sb.append(",");
+                    appendParamsJSONlike(sb);
+                    sb.append(",");
+                    appendSubqueriesJSONlike(session, sb).append("]}");
+
+                    return sb.toString();
+                }
+            }
+            case StatementTypes.UPDATE_WHERE : {
+                sb.append("{UPDATE:[");
+                appendColumnsJSONlike(sb, updateColumnMap);
+                sb.append(",");
+                appendTableJSONlike(sb);
+                sb.append(",");
+                appendConditionJSONlike(session, sb);
+                sb.append(",TARGETRANGEVARIABLES:{");
+                for (int i = 0; i < targetRangeVariables.length; i++) {
+                    if (i==0) {
+                        sb.append(i+":");
+                    } else {
+                        sb.append(","+i+":");
+                    }
+                    sb.append(targetRangeVariables[i].describeJSONlike(session));
+                }
+                sb.append("},");
+                appendParamsJSONlike(sb);
+                sb.append(",");
+                appendSubqueriesJSONlike(session, sb).append("]}");
+
+                return sb.toString();
+            }
+            case StatementTypes.DELETE_WHERE : {
+                sb.append("{DELETE:[");
+                appendTableJSONlike(sb);
+                sb.append(",");
+                appendConditionJSONlike(session, sb);
+                sb.append(",TARGETRANGEVARIABLES:{");
+                for (int i = 0; i < targetRangeVariables.length; i++) {
+                    if (i==0) {
+                        sb.append(i+":");
+                    } else {
+                        sb.append(","+i+":");
+                    }
+                    sb.append(targetRangeVariables[i].describeJSONlike(session));
+                }
+                sb.append("},");
+                appendParamsJSONlike(sb);
+                sb.append(",");
+                appendSubqueriesJSONlike(session, sb).append("]}");
+
+                return sb.toString();
+            }
+            case StatementTypes.CALL : {
+                sb.append("{CALL:CALL}");
+                return sb.toString();
+            }
+            case StatementTypes.MERGE : {
+                sb.append("{MERGE:[");
+                appendMultiColumnsJSONlike(sb, insertColumnMap);
+                sb.append(",");
+                appendColumnsJSONlike(sb, updateColumnMap);
+                sb.append(",");
+                appendTableJSONlike(sb);
+                sb.append(",");
+                appendConditionJSONlike(session, sb);
+                sb.append(",TARGETRANGEVARIABLES:{");
+                for (int i = 0; i < targetRangeVariables.length; i++) {
+                    if (i==0) {
+                        sb.append(i+":");
+                    } else {
+                        sb.append(","+i+":");
+                    }
+                    sb.append(targetRangeVariables[i].describeJSONlike(session));
+                }
+                sb.append("},");
+                appendParamsJSONlike(sb);
+                sb.append(",");
+                appendSubqueriesJSONlike(session, sb).append("]}");
+
+                return sb.toString();
+            }
+            default : {
+                return "{UNKNOWN:UNKNOWN}";
+            }
+        }
+    }
+
+    private StringBuilder appendSubqueriesJSONlike(Session session, StringBuilder sb) {
+
+        sb.append("{SUBQUERIES:[");
+
+        for (int i = 0; i < subqueries.length; i++) {
+            if (i==0){
+                sb.append("LEVEL").append(subqueries[i].depth).append(":");
+            } else {
+                sb.append(",LEVEL").append(subqueries[i].depth).append(":");
+            }
+            if (subqueries[i].queryExpression == null) {
+                sb.append("VALUE_EXPRESSION");
+            } else {
+                sb.append(subqueries[i].queryExpression.describeJSONlike(session));
+            }
+
+        }
+
+        sb.append("]}");
+
+        return sb;
+    }
+
+    private StringBuilder appendTableJSONlike(StringBuilder sb) {
+
+        sb.append("{TABLE:").append(targetTable.getName().name).append('}');
+
+        return sb;
+    }
+
+    private StringBuilder appendSourceTableJSONlike(StringBuilder sb) {
+
+        sb.append("{SOURCE_TABLE:").append(sourceTable.getName().name).append(
+                '}');
+
+        return sb;
+    }
+
+    private StringBuilder appendColumnsJSONlike(StringBuilder sb, int[] columnMap) {
+
+        if (columnMap == null || updateExpressions.length == 0) {
+            sb.append("{}");
+            return sb;
+        }
+
+        sb.append("{COLUMNS:[");
+
+        for (int i = 0; i < columnMap.length; i++) {
+            if(i>0){
+                sb.append(",");
+            }
+            sb.append(targetTable.getColumn(columnMap[i]).getNameString());
+        }
+
+        sb.append("],UPDATE_EXPRESSION:[");
+
+        for (int i = 0; i < updateExpressions.length; i++) {
+            if(i>0){
+                sb.append(",");
+            }
+            sb.append(updateExpressions[i]);
+        }
+
+        sb.append("]}");
+
+        return sb;
+    }
+
+    private StringBuilder appendMultiColumnsJSONlike(StringBuilder sb,
+                                             int[] columnMap) {
+
+        // todo - multiColVals is always null
+        if (columnMap == null || multiColumnValues == null) {
+            sb.append("{}");
+            return sb;
+        }
+
+        sb.append("{COLUMNS:[");
+
+        for (int j = 0; j < multiColumnValues.length; j++) {
+            for (int i = 0; i < columnMap.length; i++) {
+                if(i>0){
+                    sb.append(",");
+                }
+                sb.append("{COLUMN:");
+                sb.append(targetTable.getColumn(columnMap[i]).getName().name);
+                sb.append(",MULTIVALUES:");
+                sb.append(multiColumnValues[j][i]).append('}');
+            }
+        }
+
+        sb.append("]}");
+
+        return sb;
+    }
+
+    private StringBuilder appendParamsJSONlike(StringBuilder sb) {
+
+        sb.append("{PARAMETERS:{");
+
+        for (int i = 0; i < parameters.length; i++) {
+            if(i>0){
+                sb.append(",");
+            }
+            sb.append("PARAM").append(i).append(':').append(
+                    parameters[i].describeJSONlike(null));
+        }
+
+        sb.append("}}");
+
+        return sb;
+    }
+
+    private StringBuilder appendConditionJSONlike(Session session, StringBuilder sb) {
+
+        return condition == null ? sb.append("{}")
+                : sb.append("{CONDITION:").append(
+                condition.describeJSONlike(session)).append(
+                "}");
+    }
 }
