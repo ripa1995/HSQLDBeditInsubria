@@ -2673,7 +2673,7 @@ public class QuerySpecification extends QueryExpression {
     }
 
     //RR20191211
-
+/*
     public String[] getFullColumnNames(Session session) {
 
         String[] names = new String[indexLimitVisible];
@@ -2723,6 +2723,113 @@ public class QuerySpecification extends QueryExpression {
             s = havingCondition.describe(session, 0);
         }
         return s;
+    }*/
+
+    public String describeJSONlike(Session session) {
+
+        StringBuilder sb;
+        String        temp;
+
+        sb = new StringBuilder();
+
+        sb.append("{QUERYSPECIFICATION:{ISDISTINCT:").append(isDistinctSelect).append(",");
+        sb.append("ISGROUPED:").append(isGrouped).append(",");
+        sb.append("ISAGGREGATED:").append(isAggregated).append(",");
+        sb.append("COLUMNS:[");
+        for (int i = 0; i < indexLimitVisible; i++) {
+            int index = i;
+            if(i>0){
+                sb.append(",");
+            }
+            if (exprColumns[i].getType() == OpTypes.SIMPLE_COLUMN) {
+                index = exprColumns[i].columnIndex;
+            }
+            sb.append("{COL").append(i).append(":");
+            temp = exprColumns[index].describeJSONlike(session);
+            sb.append(temp);
+            sb.append(",NULLABLE:");
+            if (resultMetaData.columns[i].getNullability()
+                    == SchemaObject.Nullability.NO_NULLS) {
+                sb.append("false");
+            } else {
+                sb.append("true");
+            }
+            sb.append("}");
+        }
+        sb.append("],RANGEVARIABLES:[");
+        for (int i = 0; i < rangeVariables.length; i++) {
+            if(i>0){
+                sb.append(",");
+            }
+            sb.append("{RV").append(i).append(":");
+            sb.append(rangeVariables[i].describeJSONlike(session));
+            sb.append("}");
+        }
+
+        sb.append("],QUERYCONDITION:");
+
+        temp = queryCondition == null ? "{}"
+                : queryCondition.describeJSONlike(session);
+
+        if (isGrouped) {
+            sb.append(",GROUPCOLUMNS:[");
+
+            for (int i = indexLimitRowId;
+                 i < indexLimitRowId + groupByColumnCount; i++) {
+                int index = i;
+                if(i>0){
+                    sb.append(",");
+                }
+                if (exprColumns[i].getType() == OpTypes.SIMPLE_COLUMN) {
+                    index = exprColumns[i].columnIndex;
+                }
+                sb.append("{QC").append(i).append(":");
+                sb.append(exprColumns[index].describeJSONlike(session));
+                sb.append("}");
+            }
+
+            sb.append("]");
+        }
+
+        if (havingCondition != null) {
+            temp = havingCondition.describeJSONlike(session);
+
+            sb.append(",HAVINGCONDITION:").append(temp);
+        }
+
+        if (sortAndSlice.hasOrder()) {
+            sb.append(",ORDERBY:{EXPRESSIONS:[");
+
+            for (int i = 0; i < sortAndSlice.exprList.size(); i++) {
+                if(i>0){
+                    sb.append(",");
+                }
+                sb.append("{EX").append(i).append(":");
+                sb.append(((Expression) sortAndSlice.exprList.get(i)).describeJSONlike(session));
+                sb.append("}");
+            }
+            sb.append("],USEINDEX:");
+
+            if (sortAndSlice.primaryTableIndex != null) {
+                sb.append("true");
+            } else {
+                sb.append("false");
+            }
+
+            sb.append("}");
+        }
+
+        if (sortAndSlice.hasLimit()) {
+            if (sortAndSlice.limitCondition.getLeftNode() != null) {
+                sb.append(",OFFSET:").append(sortAndSlice.limitCondition.getLeftNode().describeJSONlike(session));
+            }
+
+            if (sortAndSlice.limitCondition.getRightNode() != null) {
+                sb.append(",LIMIT:").append(sortAndSlice.limitCondition.getRightNode().describeJSONlike(session));
+            }
+        }
+
+        return sb.toString();
     }
 
 }

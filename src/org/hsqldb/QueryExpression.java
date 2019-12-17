@@ -1142,4 +1142,50 @@ public class QueryExpression implements RangeGroup {
     }
 
     public void setAsExists() {}
+
+    public String describeJSONlike(Session session) {
+
+        StringBuilder sb;
+        String temp;
+
+        sb = new StringBuilder();
+
+        switch (unionType) {
+
+            case UNION :
+                temp = Tokens.T_UNION;
+                break;
+
+            case UNION_ALL :
+                temp = Tokens.T_UNION + '_' + Tokens.T_ALL;
+                break;
+
+            case INTERSECT :
+                temp = Tokens.T_INTERSECT;
+                break;
+
+            case INTERSECT_ALL :
+                temp = Tokens.T_INTERSECT + '_' + Tokens.T_ALL;
+                break;
+
+            case EXCEPT :
+                temp = Tokens.T_EXCEPT;
+                break;
+
+            case EXCEPT_ALL :
+                temp = Tokens.T_EXCEPT + '_' + Tokens.T_ALL;
+                break;
+
+            default :
+                throw Error.runtimeError(ErrorCode.U_S0500, "QueryExpression");
+        }
+
+        sb.append("{QUERYEXPRESSION:{UNIONTYPE:").append(temp).append(",LEFTQUERY:");
+        sb.append(leftQueryExpression.describeJSONlike(session));
+        sb.append(",RIGHTQUERY:");
+        sb.append(rightQueryExpression.describeJSONlike(session));
+        sb.append("}}");
+
+        return sb.toString();
+    }
 }

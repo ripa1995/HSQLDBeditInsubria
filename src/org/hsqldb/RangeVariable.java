@@ -1153,6 +1153,78 @@ public class RangeVariable {
         return new RangeIteratorJoined(iterators);
     }
 
+    public String describeJSONlike(Session session) {
+        StringBuilder sb;
+
+        sb = new StringBuilder();
+
+        sb.append("{RANGEVARIABLE:{");
+
+        String temp = "INNER";
+
+        if (isLeftJoin) {
+            temp = "LEFT_OUTER";
+
+            if (isRightJoin) {
+                temp = "FULL";
+            }
+        } else if (isRightJoin) {
+            temp = "RIGHT_OUTER";
+        }
+
+        sb.append("JOINTYPE:").append(temp);
+        sb.append(",TABLE:").append(rangeTable.getName().name);
+
+        if (tableAlias != null) {
+            sb.append(",ALIAS:").append(tableAlias.name);
+        }
+
+        RangeVariableConditions[] conditions = joinConditions;
+
+        if (whereConditions[0].hasIndexCondition()) {
+            conditions = whereConditions;
+        }
+
+        sb.append(",CARDINALITY:");
+        sb.append(rangeTable.getRowStore(session).elementCount());
+
+        boolean fullScan = !conditions[0].hasIndexCondition();
+
+        if (conditions == whereConditions) {
+            if (joinConditions[0].nonIndexCondition != null) {
+                sb.append(",JOINCONDITION:");
+                sb.append(joinConditions[0].nonIndexCondition.describeJSONlike(session));
+            }
+        }
+
+        sb.append(",ACCESS:").append(fullScan ? "FULL_SCAN"
+                : "INDEX_PRED");
+        sb.append(",CONDITIONS:[");
+        for (int i = 0; i < conditions.length; i++) {
+            if (i > 0) {
+                sb.append(",{TYPE:OR,");
+            } else {
+                if (conditions == whereConditions) {
+                    sb.append("{TYPE:WHERE,");
+                } else {
+                    sb.append("{TYPE:JOIN,");
+                }
+            }
+            sb.append("CONDITION:");
+            sb.append(conditions[i].describeJSONlike(session));
+            sb.append("}");
+        }
+        sb.append("]");
+        if (conditions == joinConditions) {
+            if (whereConditions[0].nonIndexCondition != null) {
+                sb.append(",WHERECONDITION:");
+                sb.append(whereConditions[0].nonIndexCondition.describeJSONlike(session));
+            }
+        }
+        sb.append("}}");
+        return sb.toString();
+    }
+
     public static class RangeIteratorBase implements RangeIterator {
 
         Session         session;
@@ -2310,6 +2382,47 @@ public class RangeVariable {
                     terminalCondition.replaceExpressions(expressions,
                         resultRangePosition);
             }
+        }
+
+        public String describeJSONlike(Session session) {
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("{RANGEVARIABLECONDITION:{");
+
+            sb.append("INDEX:").append(rangeIndex.getName().name);
+
+            if (hasIndexCondition()) {
+                if (indexedColumnCount > 0) {
+                    sb.append(",START_CONDITION:[");
+
+                    for (int j = 0; j < indexedColumnCount; j++) {
+                        if (indexCond != null && indexCond[j] != null) {
+                            if(j>0){
+                                sb.append(",");
+                            }
+                            sb.append(indexCond[j].describeJSONlike(session));
+                        }
+                    }
+
+                    sb.append("]");
+                }
+
+                if (this.opTypeEnd != OpTypes.EQUAL
+                        && indexEndCondition != null) {
+                    String temp = indexEndCondition.describeJSONlike(session);
+
+                    sb.append(",END_CONDITION:").append(temp);
+                }
+            }
+
+            if (nonIndexCondition != null) {
+                String temp = nonIndexCondition.describeJSONlike(session);
+
+                sb.append(",OTHER_CONDITION:").append(temp);
+            }
+            sb.append("}}");
+            return sb.toString();
+
         }
     }
 }
