@@ -690,4 +690,77 @@ public class ExpressionArithmetic extends Expression {
                 throw Error.runtimeError(ErrorCode.U_S0500, "Expression");
         }
     }
+
+    protected String describeJSONlike(Session session) {
+
+        StringBuilder sb = new StringBuilder(64);
+        sb.append("{EXPRESSION_ARITHMETIC:{OPTYPE:");
+        switch (opType) {
+
+            case OpTypes.VALUE :
+                sb.append("VALUE,");
+                sb.append("VALUE:").append(
+                        dataType.convertToSQLString(valueData));
+                sb.append(",TYPE: ").append(dataType.getNameString());
+
+                return sb.toString();
+
+            case OpTypes.ROW :
+
+                //
+            case OpTypes.VALUELIST :
+                sb.append("VALUELIST,");
+                sb.append("TYPE:").append(dataType.getNameString());
+                sb.append(",VALUES:[");
+                for (int i = 0; i < nodes.length; i++) {
+                    sb.append(nodes[i].describeJSONlike(session));
+                }
+                sb.append("]");
+                break;
+
+            case OpTypes.NEGATE :
+                sb.append("NEGATE");
+                break;
+
+            case OpTypes.ADD :
+                sb.append("ADD");
+                break;
+
+            case OpTypes.SUBTRACT :
+                sb.append("SUBTRACT");
+                break;
+
+            case OpTypes.MULTIPLY :
+                sb.append("MULTIPLY");
+                break;
+
+            case OpTypes.DIVIDE :
+                sb.append("DIVIDE");
+                break;
+
+            case OpTypes.CONCAT :
+                sb.append("CONCAT");
+                break;
+
+            case OpTypes.CAST :
+                sb.append("CAST,TYPE:");
+                sb.append(dataType.getTypeDefinition());
+                break;
+
+            default :
+        }
+
+        if (getLeftNode() != null) {
+            sb.append(",ARGLEFT:");
+            sb.append(nodes[LEFT].describeJSONlike(session));
+
+        }
+
+        if (getRightNode() != null) {
+            sb.append(",ARGRIGHT:");
+            sb.append(nodes[RIGHT].describeJSONlike(session));
+        }
+
+        return sb.append("}}").toString();
+    }
 }

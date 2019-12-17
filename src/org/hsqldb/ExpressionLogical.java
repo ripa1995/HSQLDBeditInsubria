@@ -2412,4 +2412,127 @@ public class ExpressionLogical extends Expression {
 
         return cost;
     }
+
+    public String describeJSONlike(Session session) {
+
+        StringBuilder sb = new StringBuilder(64);
+        sb.append("{EXPRESSION_LOGICAL:{OPTYPE:");
+        switch (opType) {
+
+            case OpTypes.VALUE :
+                sb.append("VALUE,");
+                sb.append("VALUE:").append(
+                        dataType.convertToSQLString(valueData));
+                sb.append(",TYPE:").append(dataType.getNameString());
+
+                return sb.append("}}").toString();
+
+            case OpTypes.NOT :
+                if (nodes[LEFT].opType == OpTypes.NOT_DISTINCT) {
+                    sb.append(Tokens.T_DISTINCT);
+
+                    return sb.append("}}").toString();
+                }
+
+                sb.append(Tokens.T_NOT);
+                break;
+
+            case OpTypes.NOT_DISTINCT :
+                sb.append(Tokens.T_NOT).append('_').append(Tokens.T_DISTINCT);
+                break;
+
+            case OpTypes.EQUAL :
+                sb.append("EQUAL");
+                break;
+
+            case OpTypes.GREATER_EQUAL :
+            case OpTypes.GREATER_EQUAL_PRE :
+                sb.append("GREATER_EQUAL");
+                break;
+
+            case OpTypes.GREATER :
+                sb.append("GREATER");
+                break;
+
+            case OpTypes.SMALLER :
+                sb.append("SMALLER");
+                break;
+
+            case OpTypes.SMALLER_EQUAL :
+                sb.append("SMALLER_EQUAL");
+                break;
+
+            case OpTypes.NOT_EQUAL :
+                sb.append("NOT_EQUAL");
+                break;
+
+            case OpTypes.AND :
+                sb.append(Tokens.T_AND);
+                break;
+
+            case OpTypes.OR :
+                sb.append(Tokens.T_OR);
+                break;
+
+            case OpTypes.MATCH_SIMPLE :
+            case OpTypes.MATCH_PARTIAL :
+            case OpTypes.MATCH_FULL :
+            case OpTypes.MATCH_UNIQUE_SIMPLE :
+            case OpTypes.MATCH_UNIQUE_PARTIAL :
+            case OpTypes.MATCH_UNIQUE_FULL :
+                sb.append(Tokens.T_MATCH);
+                break;
+
+            case OpTypes.IS_NULL :
+                sb.append(Tokens.T_IS).append('_').append(Tokens.T_NULL);
+                break;
+
+            case OpTypes.UNIQUE :
+                sb.append(Tokens.T_UNIQUE);
+                break;
+
+            case OpTypes.EXISTS :
+                sb.append(Tokens.T_EXISTS);
+                break;
+
+            case OpTypes.OVERLAPS :
+                sb.append(Tokens.T_OVERLAPS);
+                break;
+
+            case OpTypes.RANGE_CONTAINS :
+                sb.append(Tokens.T_CONTAINS);
+                break;
+
+            case OpTypes.RANGE_EQUALS :
+                sb.append(Tokens.T_EQUALS);
+                break;
+
+            case OpTypes.RANGE_OVERLAPS :
+                sb.append(Tokens.T_OVERLAPS);
+                break;
+
+            case OpTypes.RANGE_PRECEDES :
+                sb.append(Tokens.T_PRECEDES);
+                break;
+
+            case OpTypes.RANGE_SUCCEEDS :
+                sb.append(Tokens.T_SUCCEEDS);
+                break;
+
+            default :
+                throw Error.runtimeError(ErrorCode.U_S0500,
+                        "ExpressionLogical");
+        }
+        if (getLeftNode() != null) {
+            sb.append(",ARG_LEFT:");
+            sb.append(nodes[LEFT].describeJSONlike(session));
+        }
+
+        if (getRightNode() != null) {
+            sb.append(",ARG_RIGHT:");
+            sb.append(nodes[RIGHT].describeJSONlike(session));
+        }
+
+        return sb.append("}}").toString();
+    }
 }

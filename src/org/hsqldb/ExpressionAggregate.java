@@ -448,4 +448,65 @@ public class ExpressionAggregate extends Expression {
     public void setCondition(ExpressionLogical e) {
         nodes[RIGHT] = e;
     }
+
+    protected String describeJSONlike(Session session) {
+
+        StringBuilder sb = new StringBuilder(64);
+        sb.append("{EXPRESSION_AGGREGATE:{OPTYPE:");
+        switch (opType) {
+
+            case OpTypes.COUNT :
+                sb.append(Tokens.T_COUNT);
+                break;
+
+            case OpTypes.SUM :
+                sb.append(Tokens.T_SUM);
+                break;
+
+            case OpTypes.MIN :
+                sb.append(Tokens.T_MIN);
+                break;
+
+            case OpTypes.MAX :
+                sb.append(Tokens.T_MAX);
+                break;
+
+            case OpTypes.AVG :
+                sb.append(Tokens.T_AVG);
+                break;
+
+            case OpTypes.EVERY :
+                sb.append(Tokens.T_EVERY);
+                break;
+
+            case OpTypes.SOME :
+                sb.append(Tokens.T_SOME);
+                break;
+
+            case OpTypes.STDDEV_POP :
+                sb.append(Tokens.T_STDDEV_POP);
+                break;
+
+            case OpTypes.STDDEV_SAMP :
+                sb.append(Tokens.T_STDDEV_SAMP);
+                break;
+
+            case OpTypes.VAR_POP :
+                sb.append(Tokens.T_VAR_POP);
+                break;
+
+            case OpTypes.VAR_SAMP :
+                sb.append(Tokens.T_VAR_SAMP);
+                break;
+
+            default :
+        }
+
+        if (getLeftNode() != null) {
+            sb.append(",ARG:");
+            sb.append(nodes[LEFT].describeJSONlike(session));
+        }
+
+        return sb.append("}}").toString();
+    }
 }

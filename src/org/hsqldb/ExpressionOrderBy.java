@@ -144,4 +144,18 @@ public class ExpressionOrderBy extends Expression {
 
         return sb.toString();
     }
+
+    protected String describeJSONlike(Session session) {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("{EXPRESSION_ORDERBY:{VALUE:");
+        sb.append(getLeftNode().describeJSONlike(session));
+
+        if (isDescending) {
+            sb.append(",TYPE:");
+            sb.append(Tokens.T_DESC);
+        }
+
+        return sb.append("}}").toString();
+    }
 }

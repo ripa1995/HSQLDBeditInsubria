@@ -270,4 +270,21 @@ public class ExpressionTable extends Expression {
             } catch (HsqlException e) {}
         }
     }
+
+    protected String describeJSONlike(Session session) {
+
+        StringBuilder sb = new StringBuilder(64);
+
+        sb.append("{EXPRESSION_TABLE:{TYPE:");
+
+        if (isTable) {
+            sb.append(Tokens.T_TABLE);
+        } else {
+            sb.append(Tokens.T_UNNEST);
+        }
+        sb.append(",VALUE:");
+        sb.append(nodes[LEFT].describeJSONlike(session));
+
+        return sb.append("}}").toString();
+    }
 }

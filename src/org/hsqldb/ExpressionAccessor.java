@@ -199,4 +199,26 @@ public class ExpressionAccessor extends Expression {
 
         return sb.toString();
     }
+
+    protected String describeJSONlike(Session session) {
+
+        StringBuilder sb = new StringBuilder(64);
+        sb.append("{EXPRESSION_ACCESSOR:{");
+        boolean left = false;
+        if (getLeftNode() != null) {
+            left=true;
+            sb.append("ARRAY:");
+            sb.append(nodes[LEFT].describeJSONlike(session));
+        }
+
+        if (getRightNode() != null) {
+            if(left){
+                sb.append(",\n");
+            }
+            sb.append("ARRAYINDEX:");
+            sb.append(nodes[RIGHT].describeJSONlike(session));
+        }
+
+        return sb.append("}}").toString();
+    }
 }

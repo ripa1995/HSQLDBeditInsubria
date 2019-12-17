@@ -2174,4 +2174,20 @@ public class FunctionSQL extends Expression {
     public boolean isValueFunction() {
         return isSQLValueFunction;
     }
+
+    public String describeJSONlike(Session session) {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("{FUNCTIONSQL:{FUNCTION:[");
+        for (int i = 0; i < nodes.length; i++) {
+            if (nodes[i] == null) {
+                continue;
+            }
+            sb.append(nodes[i].describeJSONlike(session));
+        }
+
+        sb.append("],RETURN_TYPE:").append(dataType.getNameString());
+
+        return sb.append("}}").toString();
+    }
 }

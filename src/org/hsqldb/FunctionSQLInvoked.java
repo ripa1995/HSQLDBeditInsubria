@@ -324,4 +324,8 @@ public class FunctionSQLInvoked extends Expression {
     public void setCondition(ExpressionLogical e) {
         condition = e;
     }
+
+    public String describeJSONlike(Session session) {
+        return super.describeJSONlike(session);
+    }
 }
