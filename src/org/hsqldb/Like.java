@@ -448,32 +448,32 @@ class Like implements Cloneable {
 
     public String describeJSONlike(Session session) {
         StringBuilder sb = new StringBuilder();
-        sb.append("{LIKE:");
-        sb.append(super.toString()).append(",");
-        sb.append("ESCAPECHAR:").append(escapeChar);
-        sb.append(",ISNULL:").append(isNull);
+        sb.append("{\"LIKE\":\"");
+        sb.append(super.toString()).append("\",");
+        sb.append("\"ESCAPECHAR\":\"").append(escapeChar);
+        sb.append("\",\"ISNULL\":").append(isNull);
 
 //        sb.append("optimised=").append(optimised).append('\n');
-        sb.append(",ISIGNORECASE:").append(isIgnoreCase);
-        sb.append(",iLEN:").append(iLen);
-        sb.append(",iFIRSTWILDCASE:").append(iFirstWildCard);
-        sb.append(",cLIKE:");
+        sb.append(",\"ISIGNORECASE\":").append(isIgnoreCase);
+        sb.append(",\"iLEN\":\"").append(iLen);
+        sb.append("\",\"iFIRSTWILDCASE\":\"").append(iFirstWildCard);
+        sb.append("\",\"cLIKE\":\"");
 
         if (cLike != null) {
             sb.append(StringUtil.arrayToString(cLike));
         } else {
-            sb.append("NULL");
+            sb.append("\nNULL\n");
         }
 
-        sb.append(",WILDCARDTYPE:");
+        sb.append("\",\"WILDCARDTYPE\":\"");
 
         if (wildCardType != null) {
             sb.append(StringUtil.arrayToString(wildCardType));
         } else {
-            sb.append("NULL");
+            sb.append("\nNULL\n");
         }
 
-        sb.append('}');
+        sb.append("\"}");
 
         return sb.toString();
     }

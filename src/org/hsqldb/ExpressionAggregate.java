@@ -451,8 +451,8 @@ public class ExpressionAggregate extends Expression {
 
     protected String describeJSONlike(Session session) {
 
-        StringBuilder sb = new StringBuilder(64);
-        sb.append("{EXPRESSION_AGGREGATE:{OPTYPE:");
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"EXPRESSION_AGGREGATE\":{\"OPTYPE\":\"");
         switch (opType) {
 
             case OpTypes.COUNT :
@@ -501,12 +501,12 @@ public class ExpressionAggregate extends Expression {
 
             default :
         }
-
+        sb.append("\"");
         if (getLeftNode() != null) {
-            sb.append(",ARG:");
+            sb.append(",\"ARG\":");
             sb.append(nodes[LEFT].describeJSONlike(session));
         }
-
-        return sb.append("}}").toString();
+        sb.append("}}");
+        return sb.toString();
     }
 }

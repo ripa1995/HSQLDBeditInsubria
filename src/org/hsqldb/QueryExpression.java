@@ -1180,9 +1180,9 @@ public class QueryExpression implements RangeGroup {
                 throw Error.runtimeError(ErrorCode.U_S0500, "QueryExpression");
         }
 
-        sb.append("{QUERYEXPRESSION:{UNIONTYPE:").append(temp).append(",LEFTQUERY:");
+        sb.append("{\"QUERYEXPRESSION\":{\"UNIONTYPE\":\"").append(temp).append("\",\"LEFTQUERY\":");
         sb.append(leftQueryExpression.describeJSONlike(session));
-        sb.append(",RIGHTQUERY:");
+        sb.append(",\"RIGHTQUERY\":");
         sb.append(rightQueryExpression.describeJSONlike(session));
         sb.append("}}");
 

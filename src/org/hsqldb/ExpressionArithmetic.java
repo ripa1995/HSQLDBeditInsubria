@@ -693,15 +693,15 @@ public class ExpressionArithmetic extends Expression {
 
     protected String describeJSONlike(Session session) {
 
-        StringBuilder sb = new StringBuilder(64);
-        sb.append("{EXPRESSION_ARITHMETIC:{OPTYPE:");
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"EXPRESSION_ARITHMETIC\":{\"OPTYPE\":");
         switch (opType) {
 
             case OpTypes.VALUE :
-                sb.append("VALUE,");
-                sb.append("VALUE:").append(
+                sb.append("\"VALUE\",\"");
+                sb.append("VALUE\":\"").append(
                         dataType.convertToSQLString(valueData));
-                sb.append(",TYPE: ").append(dataType.getNameString());
+                sb.append("\",\"TYPE\":\"").append(dataType.getNameString()).append("\"}}");
 
                 return sb.toString();
 
@@ -709,58 +709,61 @@ public class ExpressionArithmetic extends Expression {
 
                 //
             case OpTypes.VALUELIST :
-                sb.append("VALUELIST,");
-                sb.append("TYPE:").append(dataType.getNameString());
-                sb.append(",VALUES:[");
+                sb.append("\"VALUELIST\",\"");
+                sb.append("TYPE\":\"").append(dataType.getNameString());
+                sb.append("\",\"VALUES\":[");
                 for (int i = 0; i < nodes.length; i++) {
+                    if(i>0){
+                        sb.append(",");
+                    }
                     sb.append(nodes[i].describeJSONlike(session));
                 }
                 sb.append("]");
                 break;
 
             case OpTypes.NEGATE :
-                sb.append("NEGATE");
+                sb.append("\"NEGATE\"");
                 break;
 
             case OpTypes.ADD :
-                sb.append("ADD");
+                sb.append("\"ADD\"");
                 break;
 
             case OpTypes.SUBTRACT :
-                sb.append("SUBTRACT");
+                sb.append("\"SUBTRACT\"");
                 break;
 
             case OpTypes.MULTIPLY :
-                sb.append("MULTIPLY");
+                sb.append("\"MULTIPLY\"");
                 break;
 
             case OpTypes.DIVIDE :
-                sb.append("DIVIDE");
+                sb.append("\"DIVIDE\"");
                 break;
 
             case OpTypes.CONCAT :
-                sb.append("CONCAT");
+                sb.append("\"CONCAT\"");
                 break;
 
             case OpTypes.CAST :
-                sb.append("CAST,TYPE:");
-                sb.append(dataType.getTypeDefinition());
+                sb.append("\"CAST\",\"TYPE\":\"");
+                sb.append(dataType.getTypeDefinition()).append("\"");
                 break;
 
             default :
         }
 
         if (getLeftNode() != null) {
-            sb.append(",ARGLEFT:");
+            sb.append(",\"ARGLEFT\":");
             sb.append(nodes[LEFT].describeJSONlike(session));
 
         }
 
         if (getRightNode() != null) {
-            sb.append(",ARGRIGHT:");
+            sb.append(",\"ARGRIGHT\":");
             sb.append(nodes[RIGHT].describeJSONlike(session));
         }
-
-        return sb.append("}}").toString();
+        sb.append("}}");
+        return sb.toString();
     }
 }

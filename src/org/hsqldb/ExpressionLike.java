@@ -369,7 +369,7 @@ public final class ExpressionLike extends ExpressionLogical {
         }
 
         StringBuilder sb = new StringBuilder();
-        sb.append("{EXPRESSIONLIKE:");
+        sb.append("{\"EXPRESSIONLIKE\":");
         sb.append(likeObject.describeJSONlike(session));
         sb.append("}");
         return sb.toString();

@@ -2178,7 +2178,7 @@ public class FunctionSQL extends Expression {
     public String describeJSONlike(Session session) {
 
         StringBuilder sb = new StringBuilder();
-        sb.append("{FUNCTIONSQL:{FUNCTION:[");
+        sb.append("{\"FUNCTIONSQL\":{\"FUNCTION\":[");
         for (int i = 0; i < nodes.length; i++) {
             if (nodes[i] == null) {
                 continue;
@@ -2186,8 +2186,8 @@ public class FunctionSQL extends Expression {
             sb.append(nodes[i].describeJSONlike(session));
         }
 
-        sb.append("],RETURN_TYPE:").append(dataType.getNameString());
-
-        return sb.append("}}").toString();
+        sb.append("],\"RETURN_TYPE\":\"").append(dataType.getNameString()).append("\"");
+        sb.append("}}");
+        return sb.toString();
     }
 }

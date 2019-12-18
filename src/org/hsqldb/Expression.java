@@ -2086,57 +2086,62 @@ public class Expression implements Cloneable {
 
     protected String describeJSONlike(Session session) {
 
-        StringBuilder sb = new StringBuilder(64);
-        sb.append("{EXPRESSION:");
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"EXPRESSION\":");
         switch (opType) {
 
             case OpTypes.VALUE :
-                sb.append("{OPTYPE:VALUE,\n");
-                sb.append("VALUE:").append(
+                sb.append("{\"OPTYPE\":\"VALUE\",");
+                sb.append("\"VALUE\":\"").append(
                         dataType.convertToSQLString(valueData));
-                sb.append(",TYPE:").append(dataType.getNameString()).append("}");
-                return sb.append("}").toString();
+                sb.append("\",\"TYPE\":\"").append(dataType.getNameString()).append("\"}}");
+                return sb.toString();
 
             case OpTypes.ARRAY :
-                sb.append("{OPTYPE:ARRAY}");
+                sb.append("{\"OPTYPE\":\"ARRAY\"}}");
 
-                return sb.append("}").toString();
+                return sb.toString();
 
             case OpTypes.ARRAY_SUBQUERY :
-                sb.append("{OPTYPE:SUBQUERY}");
+                sb.append("{\"OPTYPE\":\"SUBQUERY\"}}");
 
-                return sb.append("}").toString();
+                return sb.toString();
 
             //
             case OpTypes.ROW_SUBQUERY :
             case OpTypes.TABLE_SUBQUERY :
-                sb.append("{OPTYPE:SUBQUERY");
-                sb.append(",VALUE:");
-                sb.append(table.queryExpression.describeJSONlike(session));
+                sb.append("{\"OPTYPE\":\"SUBQUERY\"");
+                sb.append(",\"VALUE\":");
+                sb.append(table.queryExpression.describeJSONlike(session)).append("}}");
 
-                return sb.append("}").toString();
+                return sb.toString();
 
             case OpTypes.ROW :
-                sb.append("{OPTYPE:ROW");
-                sb.append(",VALUES:[");
+                sb.append("{\"OPTYPE\":\"ROW\"");
+                sb.append(",\"VALUES\":[");
                 for (int i = 0; i < nodes.length; i++) {
-
+                    if(i>0){
+                        sb.append(",");
+                    }
                     sb.append(nodes[i].describeJSONlike(session));
                 }
                 sb.append("]}");
                 break;
 
             case OpTypes.VALUELIST :
-                sb.append("{OPTYPE:VALUELIST");
-                sb.append(",VALUES:[");
+                sb.append("{\"OPTYPE\":\"VALUELIST\"");
+                sb.append(",\"VALUES\":[");
                 for (int i = 0; i < nodes.length; i++) {
+                    if(i>0){
+                        sb.append(",");
+                    }
                     sb.append(nodes[i].describeJSONlike(session));
                 }
                 sb.append("]}");
                 break;
         }
-
-        return sb.append("}").toString();
+        sb.append("}");
+        return sb.toString();
 
     }
 }

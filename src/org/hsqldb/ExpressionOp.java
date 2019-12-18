@@ -943,29 +943,32 @@ public class ExpressionOp extends Expression {
 
     protected String describeJSONlike(Session session) {
 
-        StringBuilder sb = new StringBuilder(64);
-        sb.append("{EXPRESSION_OP:{OPTYPE:");
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"EXPRESSION_OP\":{\"OPTYPE\":");
 
         switch (opType) {
 
             case OpTypes.VALUE :
-                sb.append("VALUE,");
-                sb.append("VALUE:").append(
+                sb.append("\"VALUE\",");
+                sb.append("\"VALUE\":\"").append(
                         dataType.convertToSQLString(valueData));
-                sb.append(",TYPE:").append(dataType.getNameString());
-
-                return sb.append("}}").toString();
+                sb.append("\",\"TYPE\":\"").append(dataType.getNameString());
+                sb.append("\"}}");
+                return sb.toString();
 
             case OpTypes.LIKE_ARG :
-                sb.append(Tokens.T_LIKE).append('_').append("ARG");
-                sb.append(",TYPE:");
-                sb.append(dataType.getTypeDefinition());
+                sb.append("\"").append(Tokens.T_LIKE).append('_').append("ARG\"");
+                sb.append(",\"TYPE\":\"");
+                sb.append(dataType.getTypeDefinition()).append("\"");
                 break;
 
             case OpTypes.VALUELIST :
-                sb.append(Tokens.T_VALUE).append('_').append("LIST,VALUES:[");
+                sb.append("\"").append(Tokens.T_VALUE).append('_').append("LIST\",\"VALUES\":[");
 
                 for (int i = 0; i < nodes.length; i++) {
+                    if(i>0){
+                        sb.append(",");
+                    }
                     /*if(i==0) {
                         sb.append("VALUE").append(i).append(":");
                     } else {
@@ -973,32 +976,32 @@ public class ExpressionOp extends Expression {
                     }*/
                     sb.append(nodes[i].describeJSONlike(session));
                 }
-
-                return sb.append("]}}}").toString();
+                sb.append("]}}");
+                return sb.toString();
 
             case OpTypes.CAST :
-                sb.append(Tokens.T_CAST).append(",TYPE:");
-                sb.append(dataType.getTypeDefinition());
+                sb.append("\"").append(Tokens.T_CAST).append("\",\"TYPE\":\"");
+                sb.append(dataType.getTypeDefinition()).append("\"");
                 break;
 
             case OpTypes.CASEWHEN :
-                sb.append(Tokens.T_CASEWHEN);
+                sb.append("\"").append(Tokens.T_CASEWHEN).append("\"");
                 break;
 
             case OpTypes.CONCAT_WS :
-                sb.append(Tokens.T_CONCAT_WS);
+                sb.append("\"").append(Tokens.T_CONCAT_WS).append("\"");
                 break;
 
             default :
         }
 
         if (getLeftNode() != null) {
-            sb.append(",ARG_LEFT:");
+            sb.append(",\"ARG_LEFT\":");
             sb.append(nodes[LEFT].describeJSONlike(session));
         }
 
         if (getRightNode() != null) {
-            sb.append(",ARG_RIGHT:");
+            sb.append(",\"ARG_RIGHT\":");
             sb.append(nodes[RIGHT].describeJSONlike(session));
         }
 

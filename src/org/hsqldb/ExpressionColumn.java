@@ -1291,8 +1291,8 @@ public class ExpressionColumn extends Expression {
 
     protected String describeJSONlike(Session session) {
 
-        StringBuilder sb = new StringBuilder(64);
-        sb.append("{EXPRESSION_COLUMN:{OPTYPE:");
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"EXPRESSION_COLUMN\":{\"OPTYPE\":\"");
 
         switch (opType) {
 
@@ -1305,45 +1305,45 @@ public class ExpressionColumn extends Expression {
                 break;
 
             case OpTypes.VARIABLE :
-                sb.append("VARIABLE,");
-                sb.append("VALUE:");
+                sb.append("VARIABLE\",");
+                sb.append("\"VALUE\":\"");
                 sb.append(column.getName().name);
                 break;
 
             case OpTypes.PARAMETER :
                 sb.append(Tokens.T_PARAMETER);
-                sb.append(",VALUE:");
+                sb.append("\",\"VALUE\":\"");
                 sb.append(column.getName().name);
                 break;
 
             case OpTypes.COALESCE :
                 sb.append(Tokens.T_COLUMN);
-                sb.append(",VALUE:");
+                sb.append("\",\"VALUE\":\"");
                 sb.append(columnName);
 
                 if (alias != null) {
-                    sb.append(",ALIAS:").append(alias.name);
+                    sb.append("\",\"ALIAS\":\"").append(alias.name);
                 }
                 break;
 
             case OpTypes.COLUMN :
                 sb.append(Tokens.T_COLUMN);
-                sb.append(",VALUE:");
+                sb.append("\",\"VALUE\":\"");
                 sb.append(column.getName().getSchemaQualifiedStatementName());
 
                 if (alias != null) {
-                    sb.append(",ALIAS:").append(alias.name);
+                    sb.append("\",\"ALIAS\":\"").append(alias.name);
                 }
                 break;
 
             case OpTypes.DYNAMIC_PARAM :
                 sb.append("DYNAMICPARAM");
-                sb.append(",TYPE:").append(dataType.getNameString());
+                sb.append("\",\"TYPE\":\"").append(dataType.getNameString());
                 break;
 
             case OpTypes.SEQUENCE :
                 sb.append(Tokens.T_SEQUENCE);
-                sb.append(",VALUE:");
+                sb.append("\",\"VALUE\":\"");
                 sb.append(sequence.getName().name);
                 break;
 
@@ -1352,7 +1352,7 @@ public class ExpressionColumn extends Expression {
                 // shouldn't get here
         }
 
-
-        return sb.append("}}").toString();
+        sb.append("\"}}");
+        return sb.toString();
     }
 }

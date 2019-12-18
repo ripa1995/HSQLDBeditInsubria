@@ -202,23 +202,23 @@ public class ExpressionAccessor extends Expression {
 
     protected String describeJSONlike(Session session) {
 
-        StringBuilder sb = new StringBuilder(64);
-        sb.append("{EXPRESSION_ACCESSOR:{");
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"EXPRESSION_ACCESSOR\":{");
         boolean left = false;
         if (getLeftNode() != null) {
             left=true;
-            sb.append("ARRAY:");
+            sb.append("\"ARRAY\":");
             sb.append(nodes[LEFT].describeJSONlike(session));
         }
 
         if (getRightNode() != null) {
             if(left){
-                sb.append(",\n");
+                sb.append(",");
             }
-            sb.append("ARRAYINDEX:");
+            sb.append("\"ARRAYINDEX\":");
             sb.append(nodes[RIGHT].describeJSONlike(session));
         }
-
-        return sb.append("}}").toString();
+        sb.append("}}");
+        return sb.toString();
     }
 }

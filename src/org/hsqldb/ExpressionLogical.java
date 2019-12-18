@@ -2415,23 +2415,23 @@ public class ExpressionLogical extends Expression {
 
     public String describeJSONlike(Session session) {
 
-        StringBuilder sb = new StringBuilder(64);
-        sb.append("{EXPRESSION_LOGICAL:{OPTYPE:");
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"EXPRESSION_LOGICAL\":{\"OPTYPE\":\"");
         switch (opType) {
 
             case OpTypes.VALUE :
-                sb.append("VALUE,");
-                sb.append("VALUE:").append(
+                sb.append("VALUE\",");
+                sb.append("\"VALUE\":\"").append(
                         dataType.convertToSQLString(valueData));
-                sb.append(",TYPE:").append(dataType.getNameString());
-
-                return sb.append("}}").toString();
+                sb.append("\",\"TYPE\":\"").append(dataType.getNameString());
+                sb.append("\"}}");
+                return sb.toString();
 
             case OpTypes.NOT :
                 if (nodes[LEFT].opType == OpTypes.NOT_DISTINCT) {
                     sb.append(Tokens.T_DISTINCT);
-
-                    return sb.append("}}").toString();
+                    sb.append("\"}}");
+                    return sb.toString();
                 }
 
                 sb.append(Tokens.T_NOT);
@@ -2523,16 +2523,17 @@ public class ExpressionLogical extends Expression {
                 throw Error.runtimeError(ErrorCode.U_S0500,
                         "ExpressionLogical");
         }
+        sb.append("\"");
         if (getLeftNode() != null) {
-            sb.append(",ARG_LEFT:");
+            sb.append(",\"ARG_LEFT\":");
             sb.append(nodes[LEFT].describeJSONlike(session));
         }
 
         if (getRightNode() != null) {
-            sb.append(",ARG_RIGHT:");
+            sb.append(",\"ARG_RIGHT\":");
             sb.append(nodes[RIGHT].describeJSONlike(session));
         }
-
-        return sb.append("}}").toString();
+        sb.append("}}");
+        return sb.toString();
     }
 }

@@ -273,18 +273,18 @@ public class ExpressionTable extends Expression {
 
     protected String describeJSONlike(Session session) {
 
-        StringBuilder sb = new StringBuilder(64);
+        StringBuilder sb = new StringBuilder();
 
-        sb.append("{EXPRESSION_TABLE:{TYPE:");
+        sb.append("{\"EXPRESSION_TABLE\":{\"TYPE\":\"");
 
         if (isTable) {
             sb.append(Tokens.T_TABLE);
         } else {
             sb.append(Tokens.T_UNNEST);
         }
-        sb.append(",VALUE:");
+        sb.append("\",\"VALUE\":");
         sb.append(nodes[LEFT].describeJSONlike(session));
-
-        return sb.append("}}").toString();
+        sb.append("}}");
+        return sb.toString();
     }
 }

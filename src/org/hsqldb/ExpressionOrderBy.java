@@ -148,14 +148,16 @@ public class ExpressionOrderBy extends Expression {
     protected String describeJSONlike(Session session) {
 
         StringBuilder sb = new StringBuilder();
-        sb.append("{EXPRESSION_ORDERBY:{VALUE:");
+        sb.append("{\"EXPRESSION_ORDERBY\":{\"VALUE\":");
         sb.append(getLeftNode().describeJSONlike(session));
 
         if (isDescending) {
-            sb.append(",TYPE:");
-            sb.append(Tokens.T_DESC);
+            sb.append(",\"TYPE\":\"");
+            sb.append(Tokens.T_DESC).append("\"");
+        } else {
+            sb.append(",\"TYPE\":\"ASC\"");
         }
-
-        return sb.append("}}").toString();
+        sb.append("}}");
+        return sb.toString();
     }
 }

@@ -1158,7 +1158,7 @@ public class RangeVariable {
 
         sb = new StringBuilder();
 
-        sb.append("{RANGEVARIABLE:{");
+        sb.append("{\"RANGEVARIABLE\":{");
 
         String temp = "INNER";
 
@@ -1172,11 +1172,11 @@ public class RangeVariable {
             temp = "RIGHT_OUTER";
         }
 
-        sb.append("JOINTYPE:").append(temp);
-        sb.append(",TABLE:").append(rangeTable.getName().name);
+        sb.append("\"JOINTYPE\":\"").append(temp);
+        sb.append("\",\"TABLE\":\"").append(rangeTable.getName().name).append("\"");
 
         if (tableAlias != null) {
-            sb.append(",ALIAS:").append(tableAlias.name);
+            sb.append(",\"ALIAS\":\"").append(tableAlias.name).append("\"");
         }
 
         RangeVariableConditions[] conditions = joinConditions;
@@ -1185,39 +1185,39 @@ public class RangeVariable {
             conditions = whereConditions;
         }
 
-        sb.append(",CARDINALITY:");
+        sb.append(",\"CARDINALITY\":");
         sb.append(rangeTable.getRowStore(session).elementCount());
 
         boolean fullScan = !conditions[0].hasIndexCondition();
 
         if (conditions == whereConditions) {
             if (joinConditions[0].nonIndexCondition != null) {
-                sb.append(",JOINCONDITION:");
+                sb.append(",\"JOINCONDITION\":");
                 sb.append(joinConditions[0].nonIndexCondition.describeJSONlike(session));
             }
         }
 
-        sb.append(",ACCESS:").append(fullScan ? "FULL_SCAN"
-                : "INDEX_PRED");
-        sb.append(",CONDITIONS:[");
+        sb.append(",\"ACCESS\":").append(fullScan ? "\"FULL_SCAN\""
+                : "\"INDEX_PRED\"");
+        sb.append(",\"CONDITIONS\":[");
         for (int i = 0; i < conditions.length; i++) {
             if (i > 0) {
-                sb.append(",{TYPE:OR,");
+                sb.append(",{\"TYPE\":\"OR\",");
             } else {
                 if (conditions == whereConditions) {
-                    sb.append("{TYPE:WHERE,");
+                    sb.append("{\"TYPE\":\"WHERE\",");
                 } else {
-                    sb.append("{TYPE:JOIN,");
+                    sb.append("{\"TYPE\":\"JOIN\",");
                 }
             }
-            sb.append("CONDITION:");
+            sb.append("\"CONDITION\":");
             sb.append(conditions[i].describeJSONlike(session));
             sb.append("}");
         }
         sb.append("]");
         if (conditions == joinConditions) {
             if (whereConditions[0].nonIndexCondition != null) {
-                sb.append(",WHERECONDITION:");
+                sb.append(",\"WHERECONDITION\":");
                 sb.append(whereConditions[0].nonIndexCondition.describeJSONlike(session));
             }
         }
@@ -2387,13 +2387,13 @@ public class RangeVariable {
         public String describeJSONlike(Session session) {
 
             StringBuilder sb = new StringBuilder();
-            sb.append("{RANGEVARIABLECONDITION:{");
+            sb.append("{\"RANGEVARIABLECONDITION\":{");
 
-            sb.append("INDEX:").append(rangeIndex.getName().name);
+            sb.append("\"INDEX\":\"").append(rangeIndex.getName().name).append("\"");
 
             if (hasIndexCondition()) {
                 if (indexedColumnCount > 0) {
-                    sb.append(",START_CONDITION:[");
+                    sb.append(",\"START_CONDITION\":[");
 
                     for (int j = 0; j < indexedColumnCount; j++) {
                         if (indexCond != null && indexCond[j] != null) {
@@ -2411,14 +2411,14 @@ public class RangeVariable {
                         && indexEndCondition != null) {
                     String temp = indexEndCondition.describeJSONlike(session);
 
-                    sb.append(",END_CONDITION:").append(temp);
+                    sb.append(",\"END_CONDITION\":").append(temp);
                 }
             }
 
             if (nonIndexCondition != null) {
                 String temp = nonIndexCondition.describeJSONlike(session);
 
-                sb.append(",OTHER_CONDITION:").append(temp);
+                sb.append(",\"OTHER_CONDITION\":").append(temp);
             }
             sb.append("}}");
             return sb.toString();

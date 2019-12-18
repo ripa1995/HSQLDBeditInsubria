@@ -392,7 +392,7 @@ public class RangeVariableJoined extends RangeVariable {
 
         RangeVariableConditions[] conditionsArray = joinConditions;
         StringBuilder             sb = new StringBuilder();
-        sb.append("{RANGEVARIABLEJOINED:{JOINTYPE:");
+        sb.append("{\"RANGEVARIABLEJOINED\":{\"JOINTYPE\":");
         String temp = "INNER";
 
         if (isLeftJoin) {
@@ -405,27 +405,27 @@ public class RangeVariableJoined extends RangeVariable {
             temp = "RIGHT_OUTER";
         }
 
-        sb.append(temp);
-        sb.append(",TABLE:").append(rangeTable.getName().name);
+        sb.append("\""+temp+"\"");
+        sb.append(",\"TABLE\":\"").append(rangeTable.getName().name).append("\"");
 
         if (tableAlias != null) {
-            sb.append(",ALIAS:").append(tableAlias.name);
+            sb.append(",\"ALIAS\":\"").append(tableAlias.name).append("\"");
         }
 
         boolean fullScan = !conditionsArray[0].hasIndexCondition();
 
-        sb.append(",ACCESS:").append(fullScan ? "FULL_SCAN"
-                : "INDEX_PRED");
-        sb.append(",CONDITIONS:[");
+        sb.append(",\"ACCESS\":").append(fullScan ? "\"FULL_SCAN\""
+                : "\"INDEX_PRED\"");
+        sb.append(",\"CONDITIONS\":[");
         for (int i = 0; i < conditionsArray.length; i++) {
             RangeVariableConditions conditions = this.joinConditions[i];
 
             if (i > 0) {
-                sb.append(",{TYPE:OR,");
+                sb.append(",{\"TYPE\":\"OR\",");
             } else {
-                sb.append("{TYPE:NONE,");
+                sb.append("{\"TYPE\":\"NONE\",");
             }
-            sb.append("CONDITION:");
+            sb.append("\"CONDITION\":");
             sb.append(conditions.describeJSONlike(session));
             sb.append("}");
         }
