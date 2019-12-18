@@ -769,7 +769,7 @@ public abstract class StatementDMQL extends Statement {
         switch (type) {
 
             case StatementTypes.SELECT_CURSOR : {
-                sb.append("{SELECT:[");
+                sb.append("{\"SELECT\":[");
                 sb.append(queryExpression.describeJSONlike(session));
                 sb.append(",");
                 appendParamsJSONlike(sb);
@@ -780,7 +780,7 @@ public abstract class StatementDMQL extends Statement {
             }
             case StatementTypes.INSERT : {
                 if (queryExpression == null) {
-                    sb.append("{INSERT_VALUES:[");
+                    sb.append("{\"INSERT_VALUES\":[");
                     appendMultiColumnsJSONlike(sb, insertColumnMap);
                     sb.append(",");
                     appendTableJSONlike(sb);
@@ -791,7 +791,7 @@ public abstract class StatementDMQL extends Statement {
 
                     return sb.toString();
                 } else {
-                    sb.append("{INSERT_SELECT:[");
+                    sb.append("{\"INSERT_SELECT\":[");
                     appendColumnsJSONlike(sb, insertColumnMap);
                     sb.append(",");
                     appendTableJSONlike(sb);
@@ -806,19 +806,18 @@ public abstract class StatementDMQL extends Statement {
                 }
             }
             case StatementTypes.UPDATE_WHERE : {
-                sb.append("{UPDATE:[");
+                sb.append("{\"UPDATE\":[");
                 appendColumnsJSONlike(sb, updateColumnMap);
                 sb.append(",");
                 appendTableJSONlike(sb);
                 sb.append(",");
                 appendConditionJSONlike(session, sb);
-                sb.append(",TARGETRANGEVARIABLES:{");
+                sb.append(",\"TARGETRANGEVARIABLES\":{");
                 for (int i = 0; i < targetRangeVariables.length; i++) {
-                    if (i==0) {
-                        sb.append(i+":");
-                    } else {
-                        sb.append(","+i+":");
+                    if (i>0) {
+                        sb.append(",");
                     }
+                    sb.append("\"TRV").append(i).append("\":");
                     sb.append(targetRangeVariables[i].describeJSONlike(session));
                 }
                 sb.append("},");
@@ -829,17 +828,16 @@ public abstract class StatementDMQL extends Statement {
                 return sb.toString();
             }
             case StatementTypes.DELETE_WHERE : {
-                sb.append("{DELETE:[");
+                sb.append("{\"DELETE\":[");
                 appendTableJSONlike(sb);
                 sb.append(",");
                 appendConditionJSONlike(session, sb);
-                sb.append(",TARGETRANGEVARIABLES:{");
+                sb.append(",\"TARGETRANGEVARIABLES\":{");
                 for (int i = 0; i < targetRangeVariables.length; i++) {
-                    if (i==0) {
-                        sb.append(i+":");
-                    } else {
-                        sb.append(","+i+":");
+                    if (i>0) {
+                        sb.append(",");
                     }
+                    sb.append("\"TRV").append(i).append("\":");
                     sb.append(targetRangeVariables[i].describeJSONlike(session));
                 }
                 sb.append("},");
@@ -850,11 +848,11 @@ public abstract class StatementDMQL extends Statement {
                 return sb.toString();
             }
             case StatementTypes.CALL : {
-                sb.append("{CALL:CALL}");
+                sb.append("{\"CALL\":\"CALL\"}");
                 return sb.toString();
             }
             case StatementTypes.MERGE : {
-                sb.append("{MERGE:[");
+                sb.append("{\"MERGE\":[");
                 appendMultiColumnsJSONlike(sb, insertColumnMap);
                 sb.append(",");
                 appendColumnsJSONlike(sb, updateColumnMap);
@@ -862,13 +860,12 @@ public abstract class StatementDMQL extends Statement {
                 appendTableJSONlike(sb);
                 sb.append(",");
                 appendConditionJSONlike(session, sb);
-                sb.append(",TARGETRANGEVARIABLES:{");
+                sb.append(",\"TARGETRANGEVARIABLES\":{");
                 for (int i = 0; i < targetRangeVariables.length; i++) {
-                    if (i==0) {
-                        sb.append(i+":");
-                    } else {
-                        sb.append(","+i+":");
+                    if (i>0) {
+                        sb.append(",");
                     }
+                    sb.append("\"TRV").append(i).append("\":");
                     sb.append(targetRangeVariables[i].describeJSONlike(session));
                 }
                 sb.append("},");
@@ -879,26 +876,27 @@ public abstract class StatementDMQL extends Statement {
                 return sb.toString();
             }
             default : {
-                return "{UNKNOWN:UNKNOWN}";
+                return "{\"UNKNOWN\":\"UNKNOWN\"}";
             }
         }
     }
 
     private StringBuilder appendSubqueriesJSONlike(Session session, StringBuilder sb) {
 
-        sb.append("{SUBQUERIES:[");
+        sb.append("{\"SUBQUERIES\":[");
 
         for (int i = 0; i < subqueries.length; i++) {
             if (i==0){
-                sb.append("LEVEL").append(subqueries[i].depth).append(":");
+                sb.append("{\"LEVEL").append(subqueries[i].depth).append("\":");
             } else {
-                sb.append(",LEVEL").append(subqueries[i].depth).append(":");
+                sb.append(",{\"LEVEL").append(subqueries[i].depth).append("\":");
             }
             if (subqueries[i].queryExpression == null) {
-                sb.append("VALUE_EXPRESSION");
+                sb.append("\"VALUE_EXPRESSION\"");
             } else {
                 sb.append(subqueries[i].queryExpression.describeJSONlike(session));
             }
+            sb.append("}");
 
         }
 
@@ -909,15 +907,15 @@ public abstract class StatementDMQL extends Statement {
 
     private StringBuilder appendTableJSONlike(StringBuilder sb) {
 
-        sb.append("{TABLE:").append(targetTable.getName().name).append('}');
+        sb.append("{\"TABLE\":\"").append(targetTable.getName().name).append("\"}");
 
         return sb;
     }
 
     private StringBuilder appendSourceTableJSONlike(StringBuilder sb) {
 
-        sb.append("{SOURCE_TABLE:").append(sourceTable.getName().name).append(
-                '}');
+        sb.append("{\"SOURCE_TABLE\":\"").append(sourceTable.getName().name).append(
+                "\"}");
 
         return sb;
     }
@@ -929,22 +927,22 @@ public abstract class StatementDMQL extends Statement {
             return sb;
         }
 
-        sb.append("{COLUMNS:[");
+        sb.append("{\"COLUMNS\":[\"");
 
         for (int i = 0; i < columnMap.length; i++) {
             if(i>0){
-                sb.append(",");
+                sb.append(",\"");
             }
-            sb.append(targetTable.getColumn(columnMap[i]).getNameString());
+            sb.append(targetTable.getColumn(columnMap[i]).getNameString()).append("\"");
         }
 
-        sb.append("],UPDATE_EXPRESSION:[");
+        sb.append("],\"UPDATE_EXPRESSION\":[\"");
 
         for (int i = 0; i < updateExpressions.length; i++) {
             if(i>0){
-                sb.append(",");
+                sb.append(",\"");
             }
-            sb.append(updateExpressions[i]);
+            sb.append(updateExpressions[i]).append("\"");
         }
 
         sb.append("]}");
@@ -961,17 +959,17 @@ public abstract class StatementDMQL extends Statement {
             return sb;
         }
 
-        sb.append("{COLUMNS:[");
+        sb.append("{\"COLUMNS\":[");
 
         for (int j = 0; j < multiColumnValues.length; j++) {
             for (int i = 0; i < columnMap.length; i++) {
                 if(i>0){
                     sb.append(",");
                 }
-                sb.append("{COLUMN:");
+                sb.append("{\"COLUMN\":\"");
                 sb.append(targetTable.getColumn(columnMap[i]).getName().name);
-                sb.append(",MULTIVALUES:");
-                sb.append(multiColumnValues[j][i]).append('}');
+                sb.append("\",\"MULTIVALUES\":\"");
+                sb.append(multiColumnValues[j][i]).append("\"}");
             }
         }
 
@@ -982,13 +980,13 @@ public abstract class StatementDMQL extends Statement {
 
     private StringBuilder appendParamsJSONlike(StringBuilder sb) {
 
-        sb.append("{PARAMETERS:{");
+        sb.append("{\"PARAMETERS\":{");
 
         for (int i = 0; i < parameters.length; i++) {
             if(i>0){
                 sb.append(",");
             }
-            sb.append("PARAM").append(i).append(':').append(
+            sb.append("\"PARAM").append(i).append("\":").append(
                     parameters[i].describeJSONlike(null));
         }
 
@@ -1000,7 +998,7 @@ public abstract class StatementDMQL extends Statement {
     private StringBuilder appendConditionJSONlike(Session session, StringBuilder sb) {
 
         return condition == null ? sb.append("{}")
-                : sb.append("{CONDITION:").append(
+                : sb.append("{\"CONDITION\":").append(
                 condition.describeJSONlike(session)).append(
                 "}");
     }
