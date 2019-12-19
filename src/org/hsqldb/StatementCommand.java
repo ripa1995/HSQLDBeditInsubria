@@ -89,6 +89,7 @@ public class StatementCommand extends Statement {
                 break;
 
             case StatementTypes.EXPLAIN_JSON_PLAN :
+            case StatementTypes.EXPLAIN_JSON_COLUMN :
             case StatementTypes.EXPLAIN_PLAN :
             case StatementTypes.EXPLAIN_REFERENCES :
                 group                  = StatementTypes.X_SQL_DIAGNOSTICS;
@@ -1423,6 +1424,12 @@ public class StatementCommand extends Statement {
                 return Result.newSingleColumnStringResult(Tokens.T_JSON,
                         statement.describeJSONlike(session));
             }
+            case StatementTypes.EXPLAIN_JSON_COLUMN : {
+                Statement statement = (Statement) arguments[0];
+
+                return Result.newSingleColumnStringResult(Tokens.T_JSON,
+                        statement.describeJSONcolumn(session));
+            }
             default :
                 throw Error.runtimeError(ErrorCode.U_S0500,
                                          "StatementCommand");
@@ -1570,6 +1577,10 @@ public class StatementCommand extends Statement {
     }
 
     public String describeJSONlike(Session session) {
+        return sql;
+    }
+
+    public String describeJSONcolumn(Session session) {
         return sql;
     }
 }
