@@ -319,5 +319,7 @@ public interface StatementTypes {
     int RETURN_ANY    = 0;
     int RETURN_COUNT  = 1;
     int RETURN_RESULT = 2;
-    int RETURN_PLAN = 3; //RR 20191206
+
+    //RR 20191206
+    int EXPLAIN_JSON_PLAN = 3001;
 }
