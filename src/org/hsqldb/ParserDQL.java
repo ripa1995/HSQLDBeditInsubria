@@ -6829,9 +6829,7 @@ public class ParserDQL extends ParserBase {
 
         OrderedHashSet  colNames        = null;
         QueryExpression queryExpression = XreadQueryExpression();
-        if (queryExpression.compileContext.parser.scanner.sqlString.equalsIgnoreCase("EXPLAIN PLAN FOR SELECT * FROM \"PUBLIC\".\"NUMERI\"")){
-            System.out.println("ParserDQL.compileCursorSpecification");
-        }
+
         if (token.tokenType == Tokens.FOR) {
             read();
 
