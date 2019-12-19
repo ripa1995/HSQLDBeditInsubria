@@ -363,4 +363,6 @@ public abstract class Statement {
                 : parameters[i].column.getNullability();
         }
     }
+
+    public abstract String describeJSONlike(Session session);
 }

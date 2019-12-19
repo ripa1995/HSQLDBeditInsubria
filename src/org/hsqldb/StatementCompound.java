@@ -795,6 +795,11 @@ public class StatementCompound extends Statement implements RangeGroup {
 */
     }
 
+    @Override
+    public String describeJSONlike(Session session) {
+        return "";
+    }
+
     public String describe(Session session) {
         return "";
     }

@@ -1797,6 +1797,11 @@ public class StatementSchema extends Statement {
         return sql;
     }
 
+    @Override
+    public String describeJSONlike(Session session) {
+        return sql;
+    }
+
     public Object[] getArguments() {
         return arguments;
     }

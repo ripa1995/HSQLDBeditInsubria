@@ -172,4 +172,9 @@ public class StatementSignal extends Statement {
     public boolean isCatalogChange() {
         return false;
     }
+
+    @Override
+    public String describeJSONlike(Session session) {
+        return "";
+    }
 }
