@@ -21,7 +21,8 @@ public class Test{
             System.out.println("Connected");
             ResultSet resultSet;
             JDBCStatement statement = (JDBCStatement) c.createStatement();
-            resultSet= statement.getExecutionPlan("SELECT MAX(I.ID),AVG(I.CUSTOMERID) FROM INVOICE as I join CUSTOMER as C on I.CUSTOMERID = C.ID WHERE I.ID IN (SELECT INVOICEID FROM ITEM as IT join PRODUCT as P on IT.PRODUCTID = P.ID where COST > (SELECT TOP 1 ID FROM CUSTOMER))");
+            resultSet= statement.executeQuery("EXPLAIN JSON PLAN FOR SELECT * FROM INVOICE as I join CUSTOMER as C on I.CUSTOMERID = C.ID WHERE I.TOTAL=50 AND I.ID IN (SELECT INVOICEID FROM ITEM as IT join PRODUCT as P on IT.PRODUCTID = P.ID where COST > (SELECT TOP 1 ID FROM CUSTOMER))");
+            //resultSet = statement.getExecutionPlan("SELECT MAX(I.ID),AVG(I.TOTAL) FROM INVOICE as I join CUSTOMER as C on I.CUSTOMERID = C.ID WHERE I.TOTAL=50 AND I.ID IN (SELECT INVOICEID FROM ITEM as IT join PRODUCT as P on IT.PRODUCTID = P.ID where COST > (SELECT TOP 1 ID FROM CUSTOMER))");
             while (resultSet.next()){
                 System.out.println(resultSet.getObject(1).toString());
             }
