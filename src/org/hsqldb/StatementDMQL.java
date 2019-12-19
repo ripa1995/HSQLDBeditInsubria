@@ -1009,6 +1009,7 @@ public abstract class StatementDMQL extends Statement {
     public String describeJSONcolumn(Session session) {
 
         try {
+            //TODO: Edit in order to return only minimal info about COLUMNS in the select, COLUMNS in join conditions, COLUMNS in where conditions, COLUMNS in groupby, COLUMNS in orderby, COLUMNS in having condition, operation associated with them
             return describeJSONImpl(session);
         } catch (Throwable e) {
             e.printStackTrace();
