@@ -79,9 +79,6 @@ public class ParserCommand extends ParserDDL {
 
     HsqlArrayList compileStatements(String sql, Result cmd) {
 
-        if (sql.equalsIgnoreCase("EXPLAIN PLAN FOR SELECT * FROM \"PUBLIC\".\"NUMERI\"")){
-            System.out.println("ParserCommand.compileStatements");
-        }
 
         HsqlArrayList list = new HsqlArrayList();
         Statement     cs   = null;
@@ -304,7 +301,10 @@ public class ParserCommand extends ParserDDL {
 
                 read();
 
-                if (token.tokenType == Tokens.PLAN) {
+                if(token.tokenType==Tokens.JSON){
+                    //JSON PLAN
+                    cs = compileExplainJSONPlan();
+                } else if (token.tokenType == Tokens.PLAN) {
                     cs = compileExplainPlan();
                 } else {
                     cs = compileExplainReferences();
@@ -334,6 +334,7 @@ public class ParserCommand extends ParserDDL {
             case StatementTypes.ROLLBACK_WORK :
             case StatementTypes.SET_USER_PASSWORD :
             case StatementTypes.EXPLAIN_PLAN :
+            case StatementTypes.EXPLAIN_JSON_PLAN :
                 break;
 
             default :
@@ -2589,10 +2590,6 @@ public class ParserCommand extends ParserDDL {
 
     private Statement compileExplainPlan() {
 
-        if (this.scanner.sqlString.equalsIgnoreCase("EXPLAIN PLAN FOR SELECT * FROM \"PUBLIC\".\"NUMERI\"")) {
-            System.out.println("ParserCommand.compileExplainPlan");
-        }
-
         Statement cs;
 
         readThis(Tokens.PLAN);
@@ -2725,5 +2722,20 @@ public class ParserCommand extends ParserDDL {
 
         return new StatementCommand(type, args, null,
                                     new HsqlName[]{ t.getName() });
+    }
+
+    private Statement compileExplainJSONPlan() {
+
+        Statement cs;
+        readThis(Tokens.JSON);
+        readThis(Tokens.PLAN);
+        readThis(Tokens.FOR);
+
+        cs = compilePart(ResultProperties.defaultPropsValue);
+
+        cs.setDescribe();
+
+        return new StatementCommand(StatementTypes.EXPLAIN_JSON_PLAN,
+                new Object[]{ cs });
     }
 }
