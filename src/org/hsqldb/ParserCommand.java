@@ -302,8 +302,14 @@ public class ParserCommand extends ParserDDL {
                 read();
 
                 if(token.tokenType==Tokens.JSON){
-                    //JSON PLAN
-                    cs = compileExplainJSONPlan();
+                    read();
+                    if(token.tokenType==Tokens.COLUMN){
+                        //JSON COLUMN
+                        cs = compileExplainJSONColumn();
+                    } else {
+                        //JSON PLAN
+                        cs = compileExplainJSONPlan();
+                    }
                 } else if (token.tokenType == Tokens.PLAN) {
                     cs = compileExplainPlan();
                 } else {
@@ -2727,7 +2733,6 @@ public class ParserCommand extends ParserDDL {
     private Statement compileExplainJSONPlan() {
 
         Statement cs;
-        readThis(Tokens.JSON);
         readThis(Tokens.PLAN);
         readThis(Tokens.FOR);
 
@@ -2736,6 +2741,20 @@ public class ParserCommand extends ParserDDL {
         cs.setDescribe();
 
         return new StatementCommand(StatementTypes.EXPLAIN_JSON_PLAN,
+                new Object[]{ cs });
+    }
+
+    private Statement compileExplainJSONColumn() {
+
+        Statement cs;
+        readThis(Tokens.COLUMN);
+        readThis(Tokens.FOR);
+
+        cs = compilePart(ResultProperties.defaultPropsValue);
+
+        cs.setDescribe();
+
+        return new StatementCommand(StatementTypes.EXPLAIN_JSON_COLUMN,
                 new Object[]{ cs });
     }
 }
