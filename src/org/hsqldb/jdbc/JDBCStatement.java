@@ -2073,12 +2073,12 @@ public class JDBCStatement extends JDBCStatementBase implements Statement,
             getMoreResults();
         }
     }
-
+/*
     public synchronized ResultSet getExecutionPlan(
             String sql) throws SQLException {
-        fetchResult(sql, StatementTypes.RETURN_PLAN,
+        fetchResult(sql, StatementTypes.EXPLAIN_JSON_PLAN,
                 JDBCStatementBase.NO_GENERATED_KEYS, null, null);
 
         return getResultSet();
-    }
+    }*/
 }
