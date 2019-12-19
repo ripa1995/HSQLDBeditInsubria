@@ -800,6 +800,10 @@ public class StatementCompound extends Statement implements RangeGroup {
         return "";
     }
 
+    public String describeJSONcolumn(Session session) {
+        return "";
+    }
+
     public String describe(Session session) {
         return "";
     }

@@ -821,4 +821,8 @@ public class StatementSession extends Statement {
     public String describeJSONlike(Session session) {
         return sql;
     }
+
+    public String describeJSONcolumn(Session session) {
+        return sql;
+    }
 }

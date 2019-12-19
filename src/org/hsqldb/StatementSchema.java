@@ -1802,6 +1802,11 @@ public class StatementSchema extends Statement {
         return sql;
     }
 
+    public String describeJSONcolumn(Session session) {
+        return sql;
+    }
+
+
     public Object[] getArguments() {
         return arguments;
     }

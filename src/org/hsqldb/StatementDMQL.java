@@ -1002,4 +1002,19 @@ public abstract class StatementDMQL extends Statement {
                 condition.describeJSONlike(session)).append(
                 "}");
     }
+
+    /**
+     * Retrieves a JSON like representation of this object.
+     */
+    public String describeJSONcolumn(Session session) {
+
+        try {
+            return describeJSONImpl(session);
+        } catch (Throwable e) {
+            e.printStackTrace();
+
+            return e.toString();
+        }
+    }
+
 }

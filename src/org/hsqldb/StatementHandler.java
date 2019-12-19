@@ -236,4 +236,8 @@ public class StatementHandler extends Statement {
     public String describeJSONlike(Session session) {
         return "";
     }
+
+    public String describeJSONcolumn(Session session) {
+        return "";
+    }
 }

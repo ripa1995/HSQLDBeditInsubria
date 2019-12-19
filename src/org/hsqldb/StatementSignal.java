@@ -177,4 +177,8 @@ public class StatementSignal extends Statement {
     public String describeJSONlike(Session session) {
         return "";
     }
+
+    public String describeJSONcolumn(Session session) {
+        return "";
+    }
 }
