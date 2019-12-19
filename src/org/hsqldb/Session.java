@@ -956,10 +956,6 @@ public class Session implements SessionInterface {
 
         parser.reset(this, sql);
 
-        if(sql.equalsIgnoreCase("EXPLAIN PLAN FOR SELECT * FROM \"PUBLIC\".\"NUMERI\"")){
-            System.out.println("Session.compileStatement");
-        }
-
         Statement cs =
             parser.compileStatement(ResultProperties.defaultPropsValue);
 
@@ -1035,16 +1031,17 @@ public class Session implements SessionInterface {
 
                 return result;
             }
-            //RR 20191206 check if statement require the plan
+
             case ResultConstants.EXECDIRECT : {
                 Result result = null;
-                if (cmd.getStatementType()==StatementTypes.RETURN_PLAN){
+                //RR 20191206 check if statement require the plan
+                /*if (cmd.getStatementType()==StatementTypes.EXPLAIN_JSON_PLAN){
                     compileAndGetJSON(cmd);
-                } else {
+                } else {*/
                     result = executeDirectStatement(cmd);
 
                     result = performPostExecute(cmd, result);
-                }
+                //}
                 return result;
 
             }
@@ -1278,9 +1275,7 @@ public class Session implements SessionInterface {
 
             cs.setGeneratedColumnInfo(cmd.getGeneratedResultType(),
                                       cmd.getGeneratedResultMetaData());
-            if (cs.sql.equalsIgnoreCase("EXPLAIN PLAN FOR SELECT * FROM \"PUBLIC\".\"NUMERI\"")){
-                System.out.println("Session.executeDirectStatement");
-            }
+
             result = executeCompiledStatement(cs, ValuePool.emptyObjectArray,
                                               cmd.queryTimeout);
 
@@ -2358,7 +2353,7 @@ public class Session implements SessionInterface {
     }
 
     //RR 20191206 compile statement
-
+    /*
     private Result compileAndGetJSON(Result cmd) {
         String sql = cmd.getMainString();
         HsqlArrayList list;
@@ -2383,51 +2378,51 @@ public class Session implements SessionInterface {
             StatementQuery cs = (StatementQuery) list.get(i);
             QueryExpression queryExpression = cs.queryExpression;
             System.out.println(cs.describeJSONlike(this));
-            /*QuerySpecification querySpecification = cs.queryExpression.getMainSelect();
-            String[] strings = querySpecification.getFullColumnNames(this);
-            String string;
-            //TODO
-            System.out.println("Column returned:");
-            for (String s:strings) {
-                System.out.println(s.replaceAll("\\R+", " "));
-            }
-            strings = querySpecification.getGroupedColumns(this);
-            if (strings!=null) {
-                System.out.println("Grouped column:");
-                for (String s : strings) {
-                    System.out.println(s);
-                }
-                string = querySpecification.getHavingConditions(this);
-                if (string!=null){
-                    System.out.println("Having condition:");
-                    System.out.println(string);
-                }
-            }
-            TableDerived[] subqueries = cs.getSubqueries(this);
-            if (subqueries!=null&&subqueries.length>0) {
-                System.out.println("Column in subqueries:");
-                for (int j = 0; j < subqueries.length; j++) {
-                    System.out.println("Subquery level: " + subqueries[j].depth);
-                    strings = subqueries[j].queryExpression.getMainSelect().getFullColumnNames(this);
-                    for (String s : strings) {
-                        System.out.println(s);
-                    }
-                }
-            }
-            RangeVariable[] rangeVariables = querySpecification.getRangeVariables();
-            if (rangeVariables!=null){
-                System.out.println("Range variable");
-                for (RangeVariable rangeVariable:rangeVariables){
-                    System.out.println(rangeVariable.getConditions(this).trim());
-                }
-            }*/
+//            QuerySpecification querySpecification = cs.queryExpression.getMainSelect();
+//            String[] strings = querySpecification.getFullColumnNames(this);
+//            String string;
+//            //TODO
+//            System.out.println("Column returned:");
+//            for (String s:strings) {
+//                System.out.println(s.replaceAll("\\R+", " "));
+//            }
+//            strings = querySpecification.getGroupedColumns(this);
+//            if (strings!=null) {
+//                System.out.println("Grouped column:");
+//                for (String s : strings) {
+//                    System.out.println(s);
+//                }
+//                string = querySpecification.getHavingConditions(this);
+//                if (string!=null){
+//                    System.out.println("Having condition:");
+//                    System.out.println(string);
+//                }
+//            }
+//            TableDerived[] subqueries = cs.getSubqueries(this);
+//            if (subqueries!=null&&subqueries.length>0) {
+//                System.out.println("Column in subqueries:");
+//                for (int j = 0; j < subqueries.length; j++) {
+//                    System.out.println("Subquery level: " + subqueries[j].depth);
+//                    strings = subqueries[j].queryExpression.getMainSelect().getFullColumnNames(this);
+//                    for (String s : strings) {
+//                        System.out.println(s);
+//                    }
+//                }
+//            }
+//            RangeVariable[] rangeVariables = querySpecification.getRangeVariables();
+//            if (rangeVariables!=null){
+//                System.out.println("Range variable");
+//                for (RangeVariable rangeVariable:rangeVariables){
+//                    System.out.println(rangeVariable.getConditions(this).trim());
+//                }
+//            }
 
         }
 
 
         return null;
     }
-
+    */
 
     // timeouts
     class TimeoutManager {
