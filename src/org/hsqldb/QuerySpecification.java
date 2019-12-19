@@ -286,9 +286,6 @@ public class QuerySpecification extends QueryExpression {
 
     public void resolveReferences(Session session, RangeGroup[] rangeGroups) {
 
-        if(this.compileContext.parser!=null && this.compileContext.parser.scanner.sqlString.equalsIgnoreCase("EXPLAIN PLAN FOR SELECT * FROM \"PUBLIC\".\"NUMERI\"")){
-            System.out.println("QuerySpecification.resolveReferences");
-        }
 
         if (isReferencesResolved) {
             return;
