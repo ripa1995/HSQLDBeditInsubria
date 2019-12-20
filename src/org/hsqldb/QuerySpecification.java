@@ -2776,13 +2776,13 @@ public class QuerySpecification extends QueryExpression {
             for (int i = indexLimitRowId;
                  i < indexLimitRowId + groupByColumnCount; i++) {
                 int index = i;
-                if(i>0){
+                if(i>indexLimitRowId){
                     sb.append(",");
                 }
                 if (exprColumns[i].getType() == OpTypes.SIMPLE_COLUMN) {
                     index = exprColumns[i].columnIndex;
                 }
-                sb.append("{\"QC").append(i).append("\":");
+                sb.append("{\"GC").append(i).append("\":");
                 sb.append(exprColumns[index].describeJSONlike(session));
                 sb.append("}");
             }
