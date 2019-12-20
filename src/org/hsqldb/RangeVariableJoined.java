@@ -432,4 +432,41 @@ public class RangeVariableJoined extends RangeVariable {
         sb.append("]}}");
         return sb.toString();
     }
+
+    public String describeJSONcolumn(Session session) {
+
+        RangeVariableConditions[] conditionsArray = joinConditions;
+        StringBuilder             sb = new StringBuilder();
+        sb.append("{\"RANGEVARIABLEJOINED\":{\"JOINTYPE\":");
+        String temp = "INNER";
+
+        if (isLeftJoin) {
+            temp = "LEFT_OUTER";
+
+            if (isRightJoin) {
+                temp = "FULL";
+            }
+        } else if (isRightJoin) {
+            temp = "RIGHT_OUTER";
+        }
+
+        sb.append("\""+temp+"\"");
+        sb.append(",\"TABLE\":\"").append(rangeTable.getName().name).append("\"");
+
+        sb.append(",\"CONDITIONS\":[");
+        for (int i = 0; i < conditionsArray.length; i++) {
+            RangeVariableConditions conditions = this.joinConditions[i];
+
+            if (i > 0) {
+                sb.append(",{\"TYPE\":\"OR\",");
+            } else {
+                sb.append("{\"TYPE\":\"NONE\",");
+            }
+            sb.append("\"CONDITION\":");
+            sb.append(conditions.describeJSONcolumn(session));
+            sb.append("}");
+        }
+        sb.append("]}}");
+        return sb.toString();
+    }
 }

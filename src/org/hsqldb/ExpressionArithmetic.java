@@ -766,4 +766,80 @@ public class ExpressionArithmetic extends Expression {
         sb.append("}}");
         return sb.toString();
     }
+
+    protected String describeJSONcolumn(Session session) {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"EXPRESSION_ARITHMETIC\":{\"OPTYPE\":");
+        switch (opType) {
+
+            case OpTypes.VALUE :
+                sb.append("\"VALUE\",\"");
+                sb.append("VALUE\":\"").append(
+                        dataType.convertToSQLString(valueData));
+                sb.append("\",\"TYPE\":\"").append(dataType.getNameString()).append("\"}}");
+
+                return sb.toString();
+
+            case OpTypes.ROW :
+
+                //
+            case OpTypes.VALUELIST :
+                sb.append("\"VALUELIST\",\"");
+                sb.append("TYPE\":\"").append(dataType.getNameString());
+                sb.append("\",\"VALUES\":[");
+                for (int i = 0; i < nodes.length; i++) {
+                    if(i>0){
+                        sb.append(",");
+                    }
+                    sb.append(nodes[i].describeJSONcolumn(session));
+                }
+                sb.append("]");
+                break;
+
+            case OpTypes.NEGATE :
+                sb.append("\"NEGATE\"");
+                break;
+
+            case OpTypes.ADD :
+                sb.append("\"ADD\"");
+                break;
+
+            case OpTypes.SUBTRACT :
+                sb.append("\"SUBTRACT\"");
+                break;
+
+            case OpTypes.MULTIPLY :
+                sb.append("\"MULTIPLY\"");
+                break;
+
+            case OpTypes.DIVIDE :
+                sb.append("\"DIVIDE\"");
+                break;
+
+            case OpTypes.CONCAT :
+                sb.append("\"CONCAT\"");
+                break;
+
+            case OpTypes.CAST :
+                sb.append("\"CAST\",\"TYPE\":\"");
+                sb.append(dataType.getTypeDefinition()).append("\"");
+                break;
+
+            default :
+        }
+
+        if (getLeftNode() != null) {
+            sb.append(",\"ARGLEFT\":");
+            sb.append(nodes[LEFT].describeJSONcolumn(session));
+
+        }
+
+        if (getRightNode() != null) {
+            sb.append(",\"ARGRIGHT\":");
+            sb.append(nodes[RIGHT].describeJSONcolumn(session));
+        }
+        sb.append("}}");
+        return sb.toString();
+    }
 }

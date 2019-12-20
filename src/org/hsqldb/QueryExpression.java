@@ -1184,4 +1184,16 @@ public class QueryExpression implements RangeGroup {
 
         return sb.toString();
     }
+
+    public String describeJSONcolumn(Session session) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"QUERYEXPRESSION\":{\"LEFTQUERY\":");
+        sb.append(leftQueryExpression.describeJSONlike(session));
+        sb.append(",\"RIGHTQUERY\":");
+        sb.append(rightQueryExpression.describeJSONlike(session));
+        sb.append("}}");
+
+        return sb.toString();
+
+    }
 }

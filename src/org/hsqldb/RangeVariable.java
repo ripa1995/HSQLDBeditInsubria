@@ -1225,6 +1225,62 @@ public class RangeVariable {
         return sb.toString();
     }
 
+    public String describeJSONcolumn(Session session) {
+
+        StringBuilder sb;
+
+        sb = new StringBuilder();
+
+        sb.append("{");
+
+        String temp = "INNER";
+
+        if (isLeftJoin) {
+            temp = "LEFT_OUTER";
+
+            if (isRightJoin) {
+                temp = "FULL";
+            }
+        } else if (isRightJoin) {
+            temp = "RIGHT_OUTER";
+        }
+
+        sb.append("\"JOINTYPE\":\"").append(temp);
+        sb.append("\",\"TABLE\":\"").append(rangeTable.getName().name).append("\"");
+
+        RangeVariableConditions[] conditions = joinConditions;
+
+        if (whereConditions[0].hasIndexCondition()) {
+            conditions = whereConditions;
+        }
+
+        boolean fullScan = !conditions[0].hasIndexCondition();
+
+        if (conditions == whereConditions) {
+            if (joinConditions[0].nonIndexCondition != null) {
+                sb.append(",\"JOINCONDITION\":");
+                sb.append(joinConditions[0].nonIndexCondition.describeJSONcolumn(session));
+            }
+        }
+        sb.append(",\"CONDITIONS\":[");
+        for (int i = 0; i < conditions.length; i++) {
+
+            if(i>0){
+                sb.append(",");
+            }
+            sb.append(conditions[i].describeJSONcolumn(session));
+        }
+        sb.append("]");
+        if (conditions == joinConditions) {
+            if (whereConditions[0].nonIndexCondition != null) {
+                sb.append(",\"WHERECONDITION\":");
+                sb.append(whereConditions[0].nonIndexCondition.describeJSONcolumn(session));
+            }
+        }
+        sb.append("}");
+        return sb.toString();
+    }
+
     public static class RangeIteratorBase implements RangeIterator {
 
         Session         session;
@@ -2423,6 +2479,48 @@ public class RangeVariable {
             sb.append("}}");
             return sb.toString();
 
+        }
+
+        public String describeJSONcolumn(Session session) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("[");
+            boolean start_cond = false;
+            if (hasIndexCondition()) {
+                if (indexedColumnCount > 0) {
+                    start_cond=true;
+
+
+                    for (int j = 0; j < indexedColumnCount; j++) {
+                        if (indexCond != null && indexCond[j] != null) {
+                            if(j>0){
+                                sb.append(",");
+                            }
+                            sb.append(indexCond[j].describeJSONcolumn(session));
+                        }
+                    }
+
+
+                }
+
+                if (this.opTypeEnd != OpTypes.EQUAL
+                        && indexEndCondition != null) {
+                    String temp = indexEndCondition.describeJSONcolumn(session);
+                    if (start_cond) {
+                        sb.append(",");
+                    }
+                    sb.append(temp);
+                }
+            }
+
+            if (nonIndexCondition != null) {
+                String temp = nonIndexCondition.describeJSONcolumn(session);
+                if (start_cond) {
+                    sb.append(",");
+                }
+                sb.append(temp);
+            }
+            sb.append("]");
+            return sb.toString();
         }
     }
 }

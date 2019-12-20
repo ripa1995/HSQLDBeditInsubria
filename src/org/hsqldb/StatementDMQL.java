@@ -1004,17 +1004,38 @@ public abstract class StatementDMQL extends Statement {
     }
 
     /**
-     * Retrieves a JSON like representation of this object.
+     * Retrieves a JSON like representation of this object columns.
      */
     public String describeJSONcolumn(Session session) {
 
         try {
-            //TODO: Edit in order to return only minimal info about COLUMNS in the select, COLUMNS in join conditions, COLUMNS in where conditions, COLUMNS in groupby, COLUMNS in orderby, COLUMNS in having condition, operation associated with them
-            return describeJSONImpl(session);
+            return describeJSONcolumnImpl(session);
         } catch (Throwable e) {
             e.printStackTrace();
 
             return e.toString();
+        }
+    }
+    String describeJSONcolumnImpl(Session session) throws Exception {
+
+        StringBuilder sb     = new StringBuilder();
+
+        switch (type) {
+
+            case StatementTypes.SELECT_CURSOR : {
+                sb.append("{\"SELECT\":");
+                sb.append(queryExpression.describeJSONcolumn(session));
+                sb.append("}");
+                return sb.toString();
+            }
+            case StatementTypes.INSERT :
+            case StatementTypes.UPDATE_WHERE :
+            case StatementTypes.DELETE_WHERE :
+            case StatementTypes.CALL :
+            case StatementTypes.MERGE :
+            default : {
+                return "{}";
+            }
         }
     }
 

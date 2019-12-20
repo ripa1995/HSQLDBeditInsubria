@@ -477,4 +477,12 @@ class Like implements Cloneable {
 
         return sb.toString();
     }
+
+    public String describeJSONcolumn(Session session) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"LIKE\":\"");
+        sb.append(super.toString()).append("\"}");
+        return sb.toString();
+    }
+
 }

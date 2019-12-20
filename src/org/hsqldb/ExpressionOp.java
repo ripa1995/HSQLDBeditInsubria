@@ -1007,4 +1007,72 @@ public class ExpressionOp extends Expression {
 
         return sb.append("}}").toString();
     }
+
+    protected String describeJSONcolumn(Session session) {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"EXPRESSION_OP\":{\"OPTYPE\":");
+
+        switch (opType) {
+
+            case OpTypes.VALUE :
+                sb.append("\"VALUE\",");
+                sb.append("\"VALUE\":\"").append(
+                        dataType.convertToSQLString(valueData));
+                sb.append("\",\"TYPE\":\"").append(dataType.getNameString());
+                sb.append("\"}}");
+                return sb.toString();
+
+            case OpTypes.LIKE_ARG :
+                sb.append("\"").append(Tokens.T_LIKE).append('_').append("ARG\"");
+                sb.append(",\"TYPE\":\"");
+                sb.append(dataType.getTypeDefinition()).append("\"");
+                break;
+
+            case OpTypes.VALUELIST :
+                sb.append("\"").append(Tokens.T_VALUE).append('_').append("LIST\",\"VALUES\":[");
+
+                for (int i = 0; i < nodes.length; i++) {
+                    if(i>0){
+                        sb.append(",");
+                    }
+                    /*if(i==0) {
+                        sb.append("VALUE").append(i).append(":");
+                    } else {
+                        sb.append(",VALUE").append(i).append(":");
+                    }*/
+                    sb.append(nodes[i].describeJSONcolumn(session));
+                }
+                sb.append("]}}");
+                return sb.toString();
+
+            case OpTypes.CAST :
+                sb.append("\"").append(Tokens.T_CAST).append("\",\"TYPE\":\"");
+                sb.append(dataType.getTypeDefinition()).append("\"");
+                break;
+
+            case OpTypes.CASEWHEN :
+                sb.append("\"").append(Tokens.T_CASEWHEN).append("\"");
+                break;
+
+            case OpTypes.CONCAT_WS :
+                sb.append("\"").append(Tokens.T_CONCAT_WS).append("\"");
+                break;
+
+            default :
+        }
+
+        if (getLeftNode() != null) {
+            sb.append(",\"ARG_LEFT\":");
+            sb.append(nodes[LEFT].describeJSONcolumn(session));
+        }
+
+        if (getRightNode() != null) {
+            sb.append(",\"ARG_RIGHT\":");
+            sb.append(nodes[RIGHT].describeJSONcolumn(session));
+        }
+
+        return sb.append("}}").toString();
+    }
+
 }

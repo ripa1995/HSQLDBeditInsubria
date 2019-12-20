@@ -375,6 +375,19 @@ public final class ExpressionLike extends ExpressionLogical {
         return sb.toString();
     }
 
+    public String describeJSONcolumn(Session session) {
+
+        if (likeObject == null) {
+            return super.describeJSONcolumn(session);
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(likeObject.describeJSONcolumn(session));
+
+        return sb.toString();
+    }
+
     public Expression duplicate() {
 
         ExpressionLike e = (ExpressionLike) super.duplicate();

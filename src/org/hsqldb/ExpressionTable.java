@@ -287,4 +287,14 @@ public class ExpressionTable extends Expression {
         sb.append("}}");
         return sb.toString();
     }
+
+    protected String describeJSONcolumn(Session session) {
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("{\"TABLE\":");
+        sb.append(nodes[LEFT].describeJSONcolumn(session));
+        sb.append("}");
+        return sb.toString();
+    }
 }

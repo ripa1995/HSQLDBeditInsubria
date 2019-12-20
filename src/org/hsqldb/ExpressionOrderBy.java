@@ -160,4 +160,14 @@ public class ExpressionOrderBy extends Expression {
         sb.append("}}");
         return sb.toString();
     }
+
+    protected String describeJSONcolumn(Session session) {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"ORDERBY\":");
+        sb.append(getLeftNode().describeJSONcolumn(session));
+
+        sb.append("}");
+        return sb.toString();
+    }
 }

@@ -173,4 +173,8 @@ public class ExpressionColumnAccessor extends Expression {
     protected String describeJSONlike(Session session) {
         return "{\"EXPRESSION_COLUMNACCESSOR\":{\"COLUMN\":\""+column.getName().name+"\"}}";
     }
+
+    protected String describeJSONcolumn(Session session) {
+        return "{\"COLUMN\":\""+column.getName().name+"\"}";
+    }
 }

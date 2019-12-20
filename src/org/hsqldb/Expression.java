@@ -2144,4 +2144,45 @@ public class Expression implements Cloneable {
         return sb.toString();
 
     }
+
+    protected String describeJSONcolumn(Session session) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"EXPRESSION\":");
+        switch (opType) {
+
+            case OpTypes.VALUE :
+            case OpTypes.ARRAY :
+            case OpTypes.ARRAY_SUBQUERY :
+                return "{}";
+            case OpTypes.ROW_SUBQUERY :
+            case OpTypes.TABLE_SUBQUERY :
+                sb.append("{\"VALUES\":");
+                sb.append(table.queryExpression.describeJSONcolumn(session)).append("}}");
+                return sb.toString();
+
+            case OpTypes.ROW :
+                sb.append("{\"VALUES\":[");
+                for (int i = 0; i < nodes.length; i++) {
+                    if(i>0){
+                        sb.append(",");
+                    }
+                    sb.append(nodes[i].describeJSONcolumn(session));
+                }
+                sb.append("]}");
+                break;
+
+            case OpTypes.VALUELIST :
+                sb.append("{\"VALUES\":[");
+                for (int i = 0; i < nodes.length; i++) {
+                    if(i>0){
+                        sb.append(",");
+                    }
+                    sb.append(nodes[i].describeJSONlike(session));
+                }
+                sb.append("]}");
+                break;
+        }
+        sb.append("}");
+        return sb.toString();
+    }
 }

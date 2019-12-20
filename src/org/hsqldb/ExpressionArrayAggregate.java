@@ -457,4 +457,34 @@ public class ExpressionArrayAggregate extends Expression {
         sb.append("}}");
         return sb.toString();
     }
+
+    protected String describeJSONcolumn(Session session) {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"EXPRESSION_ARRAYAGGREGATE\":{\"OPTYPE\":\"");
+        switch (opType) {
+
+            case OpTypes.ARRAY_AGG :
+                sb.append(Tokens.T_ARRAY_AGG);
+                break;
+
+            case OpTypes.GROUP_CONCAT :
+                sb.append(Tokens.T_GROUP_CONCAT);
+                break;
+
+            case OpTypes.MEDIAN :
+                sb.append(Tokens.T_MEDIAN);
+                break;
+
+            default :
+        }
+        sb.append("\"");
+        if (getLeftNode() != null) {
+            sb.append(",\"ARG\":");
+            sb.append(nodes[LEFT].describeJSONcolumn(session));
+
+        }
+        sb.append("}}");
+        return sb.toString();
+    }
 }

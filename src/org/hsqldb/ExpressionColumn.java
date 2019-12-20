@@ -1355,4 +1355,53 @@ public class ExpressionColumn extends Expression {
         sb.append("\"}}");
         return sb.toString();
     }
+
+    protected String describeJSONcolumn(Session session) {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"EXPRESSION_COLUMN\":{\"VALUE\":\"");
+
+        switch (opType) {
+
+            case OpTypes.DEFAULT :
+                sb.append(Tokens.T_DEFAULT);
+                break;
+
+            case OpTypes.ASTERISK :
+                sb.append("ASTERISK");
+                break;
+
+            case OpTypes.VARIABLE :
+                sb.append(column.getName().name);
+                break;
+
+            case OpTypes.PARAMETER :
+                sb.append(column.getName().name);
+                break;
+
+            case OpTypes.COALESCE :
+                sb.append(columnName);
+                break;
+
+            case OpTypes.COLUMN :
+                sb.append(column.getName().getSchemaQualifiedStatementName());
+
+                break;
+
+            case OpTypes.DYNAMIC_PARAM :
+                sb.append("DYNAMICPARAM");
+                break;
+
+            case OpTypes.SEQUENCE :
+                sb.append(sequence.getName().name);
+                break;
+
+            case OpTypes.MULTICOLUMN :
+
+                // shouldn't get here
+        }
+
+        sb.append("\"}}");
+        return sb.toString();
+    }
 }

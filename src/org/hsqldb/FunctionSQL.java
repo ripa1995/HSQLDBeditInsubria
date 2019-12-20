@@ -2190,4 +2190,20 @@ public class FunctionSQL extends Expression {
         sb.append("}}");
         return sb.toString();
     }
+
+    public String describeJSONcolumn(Session session) {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"FUNCTIONSQL\":{\"FUNCTION\":[");
+        for (int i = 0; i < nodes.length; i++) {
+            if (nodes[i] == null) {
+                continue;
+            }
+            sb.append(nodes[i].describeJSONcolumn(session));
+        }
+
+        sb.append("],\"RETURN_TYPE\":\"").append(dataType.getNameString()).append("\"");
+        sb.append("}}");
+        return sb.toString();
+    }
 }

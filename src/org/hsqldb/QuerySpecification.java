@@ -2831,4 +2831,113 @@ public class QuerySpecification extends QueryExpression {
         return sb.toString();
     }
 
+    public String describeJSONcolumn(Session session) {
+
+        StringBuilder sb;
+        String        temp;
+
+        sb = new StringBuilder();
+
+        sb.append("{\"QUERYSPECIFICATION\":{");
+        sb.append("\"COLUMNS\":[");
+        for (int i = 0; i < indexLimitVisible; i++) {
+            int index = i;
+            if(i>0){
+                sb.append(",");
+            }
+            if (exprColumns[i].getType() == OpTypes.SIMPLE_COLUMN) {
+                index = exprColumns[i].columnIndex;
+            }
+            sb.append("{\"COL").append(i).append("\":");
+            temp = exprColumns[index].describeJSONcolumn(session);
+            sb.append(temp);
+            /*sb.append(",\"NULLABLE\":");
+            if (resultMetaData.columns[i].getNullability()
+                    == SchemaObject.Nullability.NO_NULLS) {
+                sb.append("false");
+            } else {
+                sb.append("true");
+            }*/
+            sb.append("}");
+        }
+        sb.append("],\"RANGEVARIABLES\":[");
+        for (int i = 0; i < rangeVariables.length; i++) {
+            if(i>0){
+                sb.append(",");
+            }
+            sb.append("{\"RV").append(i).append("\":");
+            sb.append(rangeVariables[i].describeJSONcolumn(session));
+            sb.append("}");
+        }
+
+        sb.append("],\"QUERYCONDITION\":");
+
+        temp = queryCondition == null ? "{}"
+                : queryCondition.describeJSONcolumn(session);
+
+        sb.append(temp);
+
+        if (isGrouped) {
+            sb.append(",\"GROUPCOLUMNS\":[");
+
+            for (int i = indexLimitRowId;
+                 i < indexLimitRowId + groupByColumnCount; i++) {
+                int index = i;
+                if(i>indexLimitRowId){
+                    sb.append(",");
+                }
+                if (exprColumns[i].getType() == OpTypes.SIMPLE_COLUMN) {
+                    index = exprColumns[i].columnIndex;
+                }
+                sb.append("{\"GC").append(i).append("\":");
+                sb.append(exprColumns[index].describeJSONcolumn(session));
+                sb.append("}");
+            }
+
+            sb.append("]");
+        }
+
+        if (havingCondition != null) {
+            temp = havingCondition.describeJSONcolumn(session);
+
+            sb.append(",\"HAVINGCONDITION\":").append(temp);
+        }
+
+        if (sortAndSlice.hasOrder()) {
+            sb.append(",\"ORDERBY\":{\"EXPRESSIONS\":[");
+
+            for (int i = 0; i < sortAndSlice.exprList.size(); i++) {
+                if(i>0){
+                    sb.append(",");
+                }
+                sb.append("{\"EX").append(i).append("\":");
+                sb.append(((Expression) sortAndSlice.exprList.get(i)).describeJSONcolumn(session));
+                sb.append("}");
+            }
+            sb.append("]");
+            /*sb.append(",\"USEINDEX\":");
+
+            if (sortAndSlice.primaryTableIndex != null) {
+                sb.append("true");
+            } else {
+                sb.append("false");
+            }
+            */
+            sb.append("}");
+        }
+        /*
+        if (sortAndSlice.hasLimit()) {
+            if (sortAndSlice.limitCondition.getLeftNode() != null) {
+                sb.append(",\"OFFSET\":").append(sortAndSlice.limitCondition.getLeftNode().describeJSONlike(session));
+            }
+
+            if (sortAndSlice.limitCondition.getRightNode() != null) {
+                sb.append(",\"LIMIT\":").append(sortAndSlice.limitCondition.getRightNode().describeJSONlike(session));
+            }
+        }*/
+        sb.append("}}");
+        return sb.toString();
+    }
+
+
 }

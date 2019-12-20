@@ -133,4 +133,22 @@ public class ExpressionValue extends Expression {
                 throw Error.runtimeError(ErrorCode.U_S0500, "ExpressionValue");
         }
     }
+
+    protected String describeJSONcolumn(Session session) {
+
+        StringBuilder sb = new StringBuilder();
+
+        switch (opType) {
+
+            case OpTypes.VALUE :
+                sb.append("{\"VALUE\":\"").append(
+                        dataType.convertToSQLString(valueData));
+                sb.append("\",\"TYPE\":\"").append(dataType.getNameString());
+                sb.append("\"}");
+                return sb.toString();
+
+            default :
+                throw Error.runtimeError(ErrorCode.U_S0500, "ExpressionValue");
+        }
+    }
 }
