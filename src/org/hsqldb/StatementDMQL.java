@@ -58,6 +58,7 @@ import org.hsqldb.rights.Right;
 // fredt@users 20050609 - 1.8.0 - fixed EXPLAIN PLAN by implementing describe(Session)
 // fredt@users - 1.9.0 - support for generated column reporting
 // fredt@users - 1.9.0 - support for multi-row inserts
+// rripamonti - 20191220 support for EXPLAIN JSON PLAN FOR and EXPLAIN JSON COLUMN FOR by implementing describeJSONlike and describeJSONcolumn
 public abstract class StatementDMQL extends Statement {
 
     /** target table for INSERT_XXX, UPDATE and DELETE and MERGE */
