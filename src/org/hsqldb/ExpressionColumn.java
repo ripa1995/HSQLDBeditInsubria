@@ -1329,7 +1329,7 @@ public class ExpressionColumn extends Expression {
             case OpTypes.COLUMN :
                 sb.append(Tokens.T_COLUMN);
                 sb.append("\",\"VALUE\":\"");
-                sb.append(column.getName().getSchemaQualifiedStatementName());
+                sb.append(column==null?((this.tableName==null||this.tableName.equals(""))?this.columnName:this.tableName+"."+this.columnName):column.getName().getSchemaQualifiedStatementName());
 
                 if (alias != null) {
                     sb.append("\",\"ALIAS\":\"").append(alias.name);
@@ -1384,7 +1384,7 @@ public class ExpressionColumn extends Expression {
                 break;
 
             case OpTypes.COLUMN :
-                sb.append(column.getName().getSchemaQualifiedStatementName());
+                sb.append(column==null?((this.tableName==null||this.tableName.equals(""))?this.columnName:this.tableName+"."+this.columnName):column.getName().getSchemaQualifiedStatementName());
 
                 break;
 
