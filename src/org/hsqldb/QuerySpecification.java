@@ -59,6 +59,9 @@ import org.hsqldb.result.ResultProperties;
 import org.hsqldb.types.Type;
 import org.hsqldb.types.Types;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Implementation of an SQL query specification, including SELECT.
  *
@@ -125,6 +128,12 @@ public class QuerySpecification extends QueryExpression {
 
     //
     private RangeGroup[] outerRanges;
+
+    //
+    private String havingCondJsonColumn;
+    private String havingCondJson;
+    private Map<String,String> havingCondColumnNames = new HashMap<String,String>();
+    private Map<String,String> havingCondTablesAlias = new HashMap<String,String>();
 
     //
     QuerySpecification(Session session, Table table,
@@ -278,6 +287,23 @@ public class QuerySpecification extends QueryExpression {
 
         havingCondition   = e;
         havingColumnCount = 1;
+        populateHavingCondMaps(e);
+        havingCondJsonColumn = e.describeJSONcolumn(null);
+        havingCondJson = e.describeJSONlike(null);
+
+    }
+
+    //Populate maps with expression columns inside having condition
+    private void populateHavingCondMaps(Expression e) {
+        for(Expression expression: e.nodes){
+            if (expression.nodes!=null){
+                populateHavingCondMaps(expression);
+            }
+        }
+        if (e instanceof ExpressionColumn) {
+            havingCondColumnNames.put(((ExpressionColumn) e).columnName,((ExpressionColumn) e).columnName);
+            havingCondTablesAlias.put(((ExpressionColumn) e).columnName,((ExpressionColumn) e).tableName) ;
+        }
     }
 
     void addSortAndSlice(SortAndSlice sortAndSlice) {
@@ -2726,7 +2752,7 @@ public class QuerySpecification extends QueryExpression {
 
         StringBuilder sb;
         String        temp;
-
+        Map<String,String> havingCondSupportMap = new HashMap<String,String>();
         sb = new StringBuilder();
 
         sb.append("{\"QUERYSPECIFICATION\":{\"ISDISTINCT\":").append(isDistinctSelect).append(",");
@@ -2761,6 +2787,19 @@ public class QuerySpecification extends QueryExpression {
             sb.append("{\"RV").append(i).append("\":");
             sb.append(rangeVariables[i].describeJSONlike(session));
             sb.append("}");
+            //Find full name for columns in havingCondition
+            for(String havingColumnName: havingCondColumnNames.keySet()) {
+                String havingTableAlias = havingCondTablesAlias.get(havingColumnName);
+                if (rangeVariables[i].findColumn(havingColumnName) >= 0) {
+                    if ((havingTableAlias != null) && !havingTableAlias.equals("")) {
+                        if (rangeVariables[i].tableAlias.name.equalsIgnoreCase(havingTableAlias)) {
+                            havingCondSupportMap.put(havingTableAlias+"."+havingColumnName,rangeVariables[i].getColumn(rangeVariables[i].findColumn(havingColumnName)).getName().getSchemaQualifiedStatementName());
+                        }
+                    } else {
+                        havingCondSupportMap.put(havingColumnName,rangeVariables[i].getColumn(rangeVariables[i].findColumn(havingColumnName)).getName().getSchemaQualifiedStatementName());
+                    }
+                }
+            }
         }
 
         sb.append("],\"QUERYCONDITION\":");
@@ -2791,9 +2830,11 @@ public class QuerySpecification extends QueryExpression {
         }
 
         if (havingCondition != null) {
-            temp = havingCondition.describeJSONlike(session);
-
-            sb.append(",\"HAVINGCONDITION\":").append(temp);
+            //temp = havingCondition.describeJSONlike(session);
+            for(String s: havingCondSupportMap.keySet()){
+                havingCondJson = havingCondJson.replaceAll("\"\\b"+s+"\\b\"","\""+ havingCondSupportMap.get(s)+"\"");
+            }
+            sb.append(",\"HAVINGCONDITION\":").append(havingCondJson);
         }
 
         if (sortAndSlice.hasOrder()) {
@@ -2835,7 +2876,7 @@ public class QuerySpecification extends QueryExpression {
 
         StringBuilder sb;
         String        temp;
-
+        Map<String,String> havingCondSupportMap = new HashMap<String,String>();
         sb = new StringBuilder();
 
         sb.append("{\"QUERYSPECIFICATION\":{");
@@ -2868,6 +2909,19 @@ public class QuerySpecification extends QueryExpression {
             sb.append("{\"RV").append(i).append("\":");
             sb.append(rangeVariables[i].describeJSONcolumn(session));
             sb.append("}");
+            //Find full name for columns in havingCondition
+            for(String havingColumnName: havingCondColumnNames.keySet()) {
+                String havingTableAlias = havingCondTablesAlias.get(havingColumnName);
+                if (rangeVariables[i].findColumn(havingColumnName) >= 0) {
+                    if ((havingTableAlias != null) && !havingTableAlias.equals("")) {
+                        if (rangeVariables[i].tableAlias.name.equalsIgnoreCase(havingTableAlias)) {
+                            havingCondSupportMap.put(havingTableAlias+"."+havingColumnName,rangeVariables[i].getColumn(rangeVariables[i].findColumn(havingColumnName)).getName().getSchemaQualifiedStatementName());
+                        }
+                    } else {
+                        havingCondSupportMap.put(havingColumnName,rangeVariables[i].getColumn(rangeVariables[i].findColumn(havingColumnName)).getName().getSchemaQualifiedStatementName());
+                    }
+                }
+            }
         }
 
         sb.append("],\"QUERYCONDITION\":");
@@ -2898,9 +2952,11 @@ public class QuerySpecification extends QueryExpression {
         }
 
         if (havingCondition != null) {
-            temp = havingCondition.describeJSONcolumn(session);
-
-            sb.append(",\"HAVINGCONDITION\":").append(temp);
+            //temp = havingCondition.describeJSONcolumn(session);
+            for(String s: havingCondSupportMap.keySet()){
+                havingCondJsonColumn = havingCondJsonColumn.replaceAll("\"\\b"+s+"\\b\"","\""+ havingCondSupportMap.get(s)+"\"");
+            }
+            sb.append(",\"HAVINGCONDITION\":").append(havingCondJsonColumn);
         }
 
         if (sortAndSlice.hasOrder()) {
