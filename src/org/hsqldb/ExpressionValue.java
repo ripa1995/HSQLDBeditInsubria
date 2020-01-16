@@ -137,6 +137,7 @@ public class ExpressionValue extends Expression {
     protected String describeJSONcolumn(Session session) {
 
         StringBuilder sb = new StringBuilder();
+        sb.append("{\"EXPRESSION_VALUE\":");
 
         switch (opType) {
 
@@ -144,7 +145,7 @@ public class ExpressionValue extends Expression {
                 sb.append("{\"VALUE\":\"").append(
                         dataType.convertToSQLString(valueData));
                 sb.append("\",\"TYPE\":\"").append(dataType.getNameString());
-                sb.append("\"}");
+                sb.append("\"}}");
                 return sb.toString();
 
             default :
