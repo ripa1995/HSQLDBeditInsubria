@@ -47,6 +47,7 @@ public class Tokens {
 
     //RR20191218 JSON result
     static final String T_JSON = "JSON";
+    static final String T_MINIMAL = "MINIMAL";
     // SQL 200n reserved words full set
     static final String        T_ABS              = "ABS";
     public static final String T_ALL              = "ALL";
@@ -1651,6 +1652,7 @@ public class Tokens {
     static final int        VARCHAR2       = 675;
     static final int        WRITE_DELAY    = 676;
     static final int        JSON = 677;
+    static final int        MINIMAL = 678;
     //
     static final int        ACOS                       = 701;
     static final int        ACTION_ID                  = 702;
@@ -2689,6 +2691,7 @@ public class Tokens {
         commandSet.put(T_SEMICOLON, SEMICOLON);
 
         commandSet.put(T_JSON, JSON);
+        commandSet.put(T_MINIMAL, MINIMAL);
     }
 
     static int get(String token) {
