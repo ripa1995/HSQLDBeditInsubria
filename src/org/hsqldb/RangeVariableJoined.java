@@ -33,7 +33,6 @@ package org.hsqldb;
 
 import org.hsqldb.HsqlNameManager.SimpleName;
 import org.hsqldb.ParserDQL.CompileContext;
-import org.hsqldb.RangeVariable.RangeIteratorMain;
 import org.hsqldb.index.Index;
 import org.hsqldb.lib.HashMap;
 import org.hsqldb.lib.HashSet;
@@ -433,7 +432,7 @@ public class RangeVariableJoined extends RangeVariable {
         return sb.toString();
     }
 
-    public String describeJSONcolumn(Session session) {
+    public String describeJSONminimal(Session session) {
 
         RangeVariableConditions[] conditionsArray = joinConditions;
         StringBuilder             sb = new StringBuilder();
@@ -463,7 +462,7 @@ public class RangeVariableJoined extends RangeVariable {
                 sb.append("{\"TYPE\":\"NONE\",");
             }
             sb.append("\"CONDITION\":");
-            sb.append(conditions.describeJSONcolumn(session));
+            sb.append(conditions.describeJSONminimal(session));
             sb.append("}");
         }
         sb.append("]}}");

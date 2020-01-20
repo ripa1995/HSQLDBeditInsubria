@@ -178,7 +178,7 @@ public class StatementSignal extends Statement {
         return "";
     }
 
-    public String describeJSONcolumn(Session session) {
+    public String describeJSONminimal(Session session) {
         return "";
     }
 }

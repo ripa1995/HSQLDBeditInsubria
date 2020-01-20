@@ -180,7 +180,7 @@ public class StatementSimple extends Statement {
         return "";
     }
 
-    public String describeJSONcolumn(Session session) {
+    public String describeJSONminimal(Session session) {
         return "";
     }
 }

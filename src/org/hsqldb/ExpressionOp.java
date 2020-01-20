@@ -1008,7 +1008,7 @@ public class ExpressionOp extends Expression {
         return sb.append("}}").toString();
     }
 
-    protected String describeJSONcolumn(Session session) {
+    protected String describeJSONminimal(Session session) {
 
         StringBuilder sb = new StringBuilder();
         sb.append("{\"EXPRESSION_OP\":{\"OPTYPE\":");
@@ -1041,7 +1041,7 @@ public class ExpressionOp extends Expression {
                     } else {
                         sb.append(",VALUE").append(i).append(":");
                     }*/
-                    sb.append(nodes[i].describeJSONcolumn(session));
+                    sb.append(nodes[i].describeJSONminimal(session));
                 }
                 sb.append("]}}");
                 return sb.toString();
@@ -1064,12 +1064,12 @@ public class ExpressionOp extends Expression {
 
         if (getLeftNode() != null) {
             sb.append(",\"ARG_LEFT\":");
-            sb.append(nodes[LEFT].describeJSONcolumn(session));
+            sb.append(nodes[LEFT].describeJSONminimal(session));
         }
 
         if (getRightNode() != null) {
             sb.append(",\"ARG_RIGHT\":");
-            sb.append(nodes[RIGHT].describeJSONcolumn(session));
+            sb.append(nodes[RIGHT].describeJSONminimal(session));
         }
 
         return sb.append("}}").toString();

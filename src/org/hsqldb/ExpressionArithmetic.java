@@ -767,7 +767,7 @@ public class ExpressionArithmetic extends Expression {
         return sb.toString();
     }
 
-    protected String describeJSONcolumn(Session session) {
+    protected String describeJSONminimal(Session session) {
 
         StringBuilder sb = new StringBuilder();
         sb.append("{\"EXPRESSION_ARITHMETIC\":{\"OPTYPE\":");
@@ -792,7 +792,7 @@ public class ExpressionArithmetic extends Expression {
                     if(i>0){
                         sb.append(",");
                     }
-                    sb.append(nodes[i].describeJSONcolumn(session));
+                    sb.append(nodes[i].describeJSONminimal(session));
                 }
                 sb.append("]");
                 break;
@@ -831,13 +831,13 @@ public class ExpressionArithmetic extends Expression {
 
         if (getLeftNode() != null) {
             sb.append(",\"ARGLEFT\":");
-            sb.append(nodes[LEFT].describeJSONcolumn(session));
+            sb.append(nodes[LEFT].describeJSONminimal(session));
 
         }
 
         if (getRightNode() != null) {
             sb.append(",\"ARGRIGHT\":");
-            sb.append(nodes[RIGHT].describeJSONcolumn(session));
+            sb.append(nodes[RIGHT].describeJSONminimal(session));
         }
         sb.append("}}");
         return sb.toString();

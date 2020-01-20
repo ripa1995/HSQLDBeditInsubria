@@ -2191,7 +2191,7 @@ public class FunctionSQL extends Expression {
         return sb.toString();
     }
 
-    public String describeJSONcolumn(Session session) {
+    public String describeJSONminimal(Session session) {
 
         StringBuilder sb = new StringBuilder();
         sb.append("{\"FUNCTIONSQL\":{\"FUNCTION\":[");
@@ -2199,7 +2199,7 @@ public class FunctionSQL extends Expression {
             if (nodes[i] == null) {
                 continue;
             }
-            sb.append(nodes[i].describeJSONcolumn(session));
+            sb.append(nodes[i].describeJSONminimal(session));
         }
 
         sb.append("],\"RETURN_TYPE\":\"").append(dataType.getNameString()).append("\"");

@@ -1225,7 +1225,7 @@ public class RangeVariable {
         return sb.toString();
     }
 
-    public String describeJSONcolumn(Session session) {
+    public String describeJSONminimal(Session session) {
 
         StringBuilder sb;
 
@@ -1259,7 +1259,7 @@ public class RangeVariable {
         if (conditions == whereConditions) {
             if (joinConditions[0].nonIndexCondition != null) {
                 sb.append(",\"JOINCONDITION\":");
-                sb.append(joinConditions[0].nonIndexCondition.describeJSONcolumn(session));
+                sb.append(joinConditions[0].nonIndexCondition.describeJSONminimal(session));
             }
         }
         sb.append(",\"CONDITIONS\":[");
@@ -1268,13 +1268,13 @@ public class RangeVariable {
             if(i>0){
                 sb.append(",");
             }
-            sb.append(conditions[i].describeJSONcolumn(session));
+            sb.append(conditions[i].describeJSONminimal(session));
         }
         sb.append("]");
         if (conditions == joinConditions) {
             if (whereConditions[0].nonIndexCondition != null) {
                 sb.append(",\"WHERECONDITION\":");
-                sb.append(whereConditions[0].nonIndexCondition.describeJSONcolumn(session));
+                sb.append(whereConditions[0].nonIndexCondition.describeJSONminimal(session));
             }
         }
         sb.append("}");
@@ -2481,7 +2481,7 @@ public class RangeVariable {
 
         }
 
-        public String describeJSONcolumn(Session session) {
+        public String describeJSONminimal(Session session) {
             StringBuilder sb = new StringBuilder();
             sb.append("[");
             boolean start_cond = false;
@@ -2495,7 +2495,7 @@ public class RangeVariable {
                             if(j>0){
                                 sb.append(",");
                             }
-                            sb.append(indexCond[j].describeJSONcolumn(session));
+                            sb.append(indexCond[j].describeJSONminimal(session));
                         }
                     }
 
@@ -2504,7 +2504,7 @@ public class RangeVariable {
 
                 if (this.opTypeEnd != OpTypes.EQUAL
                         && indexEndCondition != null) {
-                    String temp = indexEndCondition.describeJSONcolumn(session);
+                    String temp = indexEndCondition.describeJSONminimal(session);
                     if (start_cond) {
                         sb.append(",");
                     }
@@ -2513,7 +2513,7 @@ public class RangeVariable {
             }
 
             if (nonIndexCondition != null) {
-                String temp = nonIndexCondition.describeJSONcolumn(session);
+                String temp = nonIndexCondition.describeJSONminimal(session);
                 if (start_cond) {
                     sb.append(",");
                 }

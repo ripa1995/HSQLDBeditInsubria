@@ -2537,7 +2537,7 @@ public class ExpressionLogical extends Expression {
         return sb.toString();
     }
 
-    public String describeJSONcolumn(Session session) {
+    public String describeJSONminimal(Session session) {
 
         StringBuilder sb = new StringBuilder();
         sb.append("{\"EXPRESSION_LOGICAL\":{\"OPTYPE\":\"");
@@ -2646,12 +2646,12 @@ public class ExpressionLogical extends Expression {
         sb.append("\"");
         if (getLeftNode() != null) {
             sb.append(",\"ARG_LEFT\":");
-            sb.append(nodes[LEFT].describeJSONcolumn(session));
+            sb.append(nodes[LEFT].describeJSONminimal(session));
         }
 
         if (getRightNode() != null) {
             sb.append(",\"ARG_RIGHT\":");
-            sb.append(nodes[RIGHT].describeJSONcolumn(session));
+            sb.append(nodes[RIGHT].describeJSONminimal(session));
         }
         sb.append("}}");
         return sb.toString();

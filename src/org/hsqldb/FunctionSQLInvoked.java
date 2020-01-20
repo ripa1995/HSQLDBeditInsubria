@@ -329,7 +329,7 @@ public class FunctionSQLInvoked extends Expression {
         return super.describeJSONlike(session);
     }
 
-    public String describeJSONcolumn(Session session) {
-        return super.describeJSONcolumn(session);
+    public String describeJSONminimal(Session session) {
+        return super.describeJSONminimal(session);
     }
 }

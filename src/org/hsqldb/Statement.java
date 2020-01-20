@@ -366,5 +366,5 @@ public abstract class Statement {
 
     public abstract String describeJSONlike(Session session);
 
-    public abstract String describeJSONcolumn(Session session);
+    public abstract String describeJSONminimal(Session session);
 }

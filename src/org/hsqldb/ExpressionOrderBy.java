@@ -161,11 +161,11 @@ public class ExpressionOrderBy extends Expression {
         return sb.toString();
     }
 
-    protected String describeJSONcolumn(Session session) {
+    protected String describeJSONminimal(Session session) {
 
         StringBuilder sb = new StringBuilder();
         sb.append("{\"ORDERBY\":");
-        sb.append(getLeftNode().describeJSONcolumn(session));
+        sb.append(getLeftNode().describeJSONminimal(session));
 
         sb.append("}");
         return sb.toString();

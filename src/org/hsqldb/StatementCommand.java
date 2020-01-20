@@ -1428,7 +1428,7 @@ public class StatementCommand extends Statement {
                 Statement statement = (Statement) arguments[0];
 
                 return Result.newSingleColumnStringResult(Tokens.T_JSON,
-                        statement.describeJSONcolumn(session));
+                        statement.describeJSONminimal(session));
             }
             default :
                 throw Error.runtimeError(ErrorCode.U_S0500,
@@ -1580,7 +1580,7 @@ public class StatementCommand extends Statement {
         return sql;
     }
 
-    public String describeJSONcolumn(Session session) {
+    public String describeJSONminimal(Session session) {
         return sql;
     }
 }

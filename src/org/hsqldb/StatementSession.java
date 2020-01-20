@@ -822,7 +822,7 @@ public class StatementSession extends Statement {
         return sql;
     }
 
-    public String describeJSONcolumn(Session session) {
+    public String describeJSONminimal(Session session) {
         return sql;
     }
 }

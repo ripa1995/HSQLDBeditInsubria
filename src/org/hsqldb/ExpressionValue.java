@@ -134,7 +134,7 @@ public class ExpressionValue extends Expression {
         }
     }
 
-    protected String describeJSONcolumn(Session session) {
+    protected String describeJSONminimal(Session session) {
 
         StringBuilder sb = new StringBuilder();
         sb.append("{\"EXPRESSION_VALUE\":");

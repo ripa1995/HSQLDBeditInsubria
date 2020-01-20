@@ -58,7 +58,7 @@ import org.hsqldb.rights.Right;
 // fredt@users 20050609 - 1.8.0 - fixed EXPLAIN PLAN by implementing describe(Session)
 // fredt@users - 1.9.0 - support for generated column reporting
 // fredt@users - 1.9.0 - support for multi-row inserts
-// rripamonti - 20191220 support for EXPLAIN JSON PLAN FOR and EXPLAIN JSON COLUMN FOR by implementing describeJSONlike and describeJSONcolumn
+// rripamonti - 20191220 support for EXPLAIN JSON PLAN FOR and EXPLAIN JSON COLUMN FOR by implementing describeJSONlike and describeJSONminimal
 public abstract class StatementDMQL extends Statement {
 
     /** target table for INSERT_XXX, UPDATE and DELETE and MERGE */
@@ -1007,17 +1007,17 @@ public abstract class StatementDMQL extends Statement {
     /**
      * Retrieves a JSON like representation of this object columns.
      */
-    public String describeJSONcolumn(Session session) {
+    public String describeJSONminimal(Session session) {
 
         try {
-            return describeJSONcolumnImpl(session);
+            return describeJSONminimalImpl(session);
         } catch (Throwable e) {
             e.printStackTrace();
 
             return e.toString();
         }
     }
-    String describeJSONcolumnImpl(Session session) throws Exception {
+    String describeJSONminimalImpl(Session session) throws Exception {
 
         StringBuilder sb     = new StringBuilder();
 
@@ -1025,7 +1025,7 @@ public abstract class StatementDMQL extends Statement {
 
             case StatementTypes.SELECT_CURSOR : {
                 sb.append("{\"SELECT\":");
-                sb.append(queryExpression.describeJSONcolumn(session));
+                sb.append(queryExpression.describeJSONminimal(session));
                 sb.append("}");
                 return sb.toString();
             }

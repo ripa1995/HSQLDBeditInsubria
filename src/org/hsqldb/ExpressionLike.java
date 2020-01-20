@@ -375,15 +375,15 @@ public final class ExpressionLike extends ExpressionLogical {
         return sb.toString();
     }
 
-    public String describeJSONcolumn(Session session) {
+    public String describeJSONminimal(Session session) {
 
         if (likeObject == null) {
-            return super.describeJSONcolumn(session);
+            return super.describeJSONminimal(session);
         }
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append(likeObject.describeJSONcolumn(session));
+        sb.append(likeObject.describeJSONminimal(session));
 
         return sb.toString();
     }

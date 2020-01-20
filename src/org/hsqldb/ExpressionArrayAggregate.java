@@ -458,7 +458,7 @@ public class ExpressionArrayAggregate extends Expression {
         return sb.toString();
     }
 
-    protected String describeJSONcolumn(Session session) {
+    protected String describeJSONminimal(Session session) {
 
         StringBuilder sb = new StringBuilder();
         sb.append("{\"EXPRESSION_ARRAYAGGREGATE\":{\"OPTYPE\":\"");
@@ -481,7 +481,7 @@ public class ExpressionArrayAggregate extends Expression {
         sb.append("\"");
         if (getLeftNode() != null) {
             sb.append(",\"ARG\":");
-            sb.append(nodes[LEFT].describeJSONcolumn(session));
+            sb.append(nodes[LEFT].describeJSONminimal(session));
 
         }
         sb.append("}}");

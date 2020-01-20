@@ -174,7 +174,7 @@ public class ExpressionColumnAccessor extends Expression {
         return "{\"EXPRESSION_COLUMNACCESSOR\":{\"COLUMN\":\""+column.getName().name+"\"}}";
     }
 
-    protected String describeJSONcolumn(Session session) {
+    protected String describeJSONminimal(Session session) {
         return "{\"COLUMN\":\""+column.getName().name+"\"}";
     }
 }

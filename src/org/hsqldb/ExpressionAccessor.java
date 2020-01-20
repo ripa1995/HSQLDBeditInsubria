@@ -222,7 +222,7 @@ public class ExpressionAccessor extends Expression {
         return sb.toString();
     }
 
-    protected String describeJSONcolumn(Session session) {
+    protected String describeJSONminimal(Session session) {
 
         StringBuilder sb = new StringBuilder();
         sb.append("{\"EXPRESSION_ACCESSOR\":{");
@@ -230,7 +230,7 @@ public class ExpressionAccessor extends Expression {
         if (getLeftNode() != null) {
             left=true;
             sb.append("\"ARRAY\":");
-            sb.append(nodes[LEFT].describeJSONcolumn(session));
+            sb.append(nodes[LEFT].describeJSONminimal(session));
         }
 
         if (getRightNode() != null) {
@@ -238,7 +238,7 @@ public class ExpressionAccessor extends Expression {
                 sb.append(",");
             }
             sb.append("\"ARRAYINDEX\":");
-            sb.append(nodes[RIGHT].describeJSONcolumn(session));
+            sb.append(nodes[RIGHT].describeJSONminimal(session));
         }
         sb.append("}}");
         return sb.toString();

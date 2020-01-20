@@ -1356,7 +1356,7 @@ public class ExpressionColumn extends Expression {
         return sb.toString();
     }
 
-    protected String describeJSONcolumn(Session session) {
+    protected String describeJSONminimal(Session session) {
 
         StringBuilder sb = new StringBuilder();
         sb.append("{\"EXPRESSION_COLUMN\":{\"VALUE\":\"");

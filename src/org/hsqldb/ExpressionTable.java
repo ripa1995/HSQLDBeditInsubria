@@ -288,12 +288,12 @@ public class ExpressionTable extends Expression {
         return sb.toString();
     }
 
-    protected String describeJSONcolumn(Session session) {
+    protected String describeJSONminimal(Session session) {
 
         StringBuilder sb = new StringBuilder();
 
         sb.append("{\"TABLE\":");
-        sb.append(nodes[LEFT].describeJSONcolumn(session));
+        sb.append(nodes[LEFT].describeJSONminimal(session));
         sb.append("}");
         return sb.toString();
     }

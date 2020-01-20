@@ -288,7 +288,7 @@ public class QuerySpecification extends QueryExpression {
         havingCondition   = e;
         havingColumnCount = 1;
         populateHavingCondMaps(e);
-        havingCondJsonColumn = e.describeJSONcolumn(null);
+        havingCondJsonColumn = e.describeJSONminimal(null);
         havingCondJson = e.describeJSONlike(null);
 
     }
@@ -2872,7 +2872,7 @@ public class QuerySpecification extends QueryExpression {
         return sb.toString();
     }
 
-    public String describeJSONcolumn(Session session) {
+    public String describeJSONminimal(Session session) {
 
         StringBuilder sb;
         String        temp;
@@ -2890,7 +2890,7 @@ public class QuerySpecification extends QueryExpression {
                 index = exprColumns[i].columnIndex;
             }
             sb.append("{\"COL").append(i).append("\":");
-            temp = exprColumns[index].describeJSONcolumn(session);
+            temp = exprColumns[index].describeJSONminimal(session);
             sb.append(temp);
             /*sb.append(",\"NULLABLE\":");
             if (resultMetaData.columns[i].getNullability()
@@ -2907,7 +2907,7 @@ public class QuerySpecification extends QueryExpression {
                 sb.append(",");
             }
             sb.append("{\"RV").append(i).append("\":");
-            sb.append(rangeVariables[i].describeJSONcolumn(session));
+            sb.append(rangeVariables[i].describeJSONminimal(session));
             sb.append("}");
             //Find full name for columns in havingCondition
             for(String havingColumnName: havingCondColumnNames.keySet()) {
@@ -2927,7 +2927,7 @@ public class QuerySpecification extends QueryExpression {
         sb.append("],\"QUERYCONDITION\":");
 
         temp = queryCondition == null ? "{}"
-                : queryCondition.describeJSONcolumn(session);
+                : queryCondition.describeJSONminimal(session);
 
         if (sb.toString().contains(temp)) {
             sb.append("{}");
@@ -2948,7 +2948,7 @@ public class QuerySpecification extends QueryExpression {
                     index = exprColumns[i].columnIndex;
                 }
                 sb.append("{\"GC").append(i).append("\":");
-                sb.append(exprColumns[index].describeJSONcolumn(session));
+                sb.append(exprColumns[index].describeJSONminimal(session));
                 sb.append("}");
             }
 
@@ -2956,7 +2956,7 @@ public class QuerySpecification extends QueryExpression {
         }
 
         if (havingCondition != null) {
-            //temp = havingCondition.describeJSONcolumn(session);
+            //temp = havingCondition.describeJSONminimal(session);
             for(String s: havingCondSupportMap.keySet()){
                 havingCondJsonColumn = havingCondJsonColumn.replaceAll("\"\\b"+s+"\\b\"","\""+ havingCondSupportMap.get(s)+"\"");
             }
@@ -2971,7 +2971,7 @@ public class QuerySpecification extends QueryExpression {
                     sb.append(",");
                 }
                 sb.append("{\"EX").append(i).append("\":");
-                sb.append(((Expression) sortAndSlice.exprList.get(i)).describeJSONcolumn(session));
+                sb.append(((Expression) sortAndSlice.exprList.get(i)).describeJSONminimal(session));
                 sb.append("}");
             }
             sb.append("]");
