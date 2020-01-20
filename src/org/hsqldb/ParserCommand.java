@@ -303,9 +303,9 @@ public class ParserCommand extends ParserDDL {
 
                 if(token.tokenType==Tokens.JSON){
                     read();
-                    if(token.tokenType==Tokens.COLUMN){
+                    if(token.tokenType==Tokens.MINIMAL){
                         //JSON COLUMN
-                        cs = compileExplainJSONColumn();
+                        cs = compileExplainJSONMinimal();
                     } else {
                         //JSON PLAN
                         cs = compileExplainJSONPlan();
@@ -2744,17 +2744,17 @@ public class ParserCommand extends ParserDDL {
                 new Object[]{ cs });
     }
 
-    private Statement compileExplainJSONColumn() {
+    private Statement compileExplainJSONMinimal() {
 
         Statement cs;
-        readThis(Tokens.COLUMN);
+        readThis(Tokens.MINIMAL);
         readThis(Tokens.FOR);
 
         cs = compilePart(ResultProperties.defaultPropsValue);
 
         cs.setDescribe();
 
-        return new StatementCommand(StatementTypes.EXPLAIN_JSON_COLUMN,
+        return new StatementCommand(StatementTypes.EXPLAIN_JSON_MINIMAL,
                 new Object[]{ cs });
     }
 }

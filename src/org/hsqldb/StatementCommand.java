@@ -89,7 +89,7 @@ public class StatementCommand extends Statement {
                 break;
 
             case StatementTypes.EXPLAIN_JSON_PLAN :
-            case StatementTypes.EXPLAIN_JSON_COLUMN :
+            case StatementTypes.EXPLAIN_JSON_MINIMAL:
             case StatementTypes.EXPLAIN_PLAN :
             case StatementTypes.EXPLAIN_REFERENCES :
                 group                  = StatementTypes.X_SQL_DIAGNOSTICS;
@@ -1424,7 +1424,7 @@ public class StatementCommand extends Statement {
                 return Result.newSingleColumnStringResult(Tokens.T_JSON,
                         statement.describeJSONlike(session));
             }
-            case StatementTypes.EXPLAIN_JSON_COLUMN : {
+            case StatementTypes.EXPLAIN_JSON_MINIMAL: {
                 Statement statement = (Statement) arguments[0];
 
                 return Result.newSingleColumnStringResult(Tokens.T_JSON,
