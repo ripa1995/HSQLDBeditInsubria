@@ -2929,7 +2929,11 @@ public class QuerySpecification extends QueryExpression {
         temp = queryCondition == null ? "{}"
                 : queryCondition.describeJSONcolumn(session);
 
-        sb.append(temp);
+        if (sb.toString().contains(temp)) {
+            sb.append("{}");
+        } else {
+            sb.append(temp);
+        }
 
         if (isGrouped) {
             sb.append(",\"GROUPCOLUMNS\":[");
