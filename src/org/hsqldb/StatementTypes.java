@@ -322,5 +322,5 @@ public interface StatementTypes {
 
     //RR 20191206
     int EXPLAIN_JSON_PLAN = 3001;
-    int EXPLAIN_JSON_COLUMN = 3002;
+    int EXPLAIN_JSON_MINIMAL = 3002;
 }
