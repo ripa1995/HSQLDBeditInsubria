@@ -56,6 +56,8 @@ import org.hsqldb.types.RowType;
 import org.hsqldb.types.Type;
 import org.hsqldb.types.Types;
 
+import java.util.Map;
+
 /**
  * Expression class.
  *
@@ -2185,4 +2187,18 @@ public class Expression implements Cloneable {
         sb.append("}");
         return sb.toString();
     }
+
+    //Populate maps with expression columns inside having condition
+    static protected void populateMapsWithColumnNamesAndTableAlias(Expression e, Map<String,String> columnNames, Map<String,String> tableAlias) {
+        for(Expression expression: e.nodes){
+            if (expression.nodes!=null){
+                populateMapsWithColumnNamesAndTableAlias(expression,columnNames,tableAlias);
+            }
+        }
+        if (e instanceof ExpressionColumn) {
+            columnNames.put(((ExpressionColumn) e).columnName,((ExpressionColumn) e).columnName);
+            tableAlias.put(((ExpressionColumn) e).columnName,((ExpressionColumn) e).tableName) ;
+        }
+    }
+
 }

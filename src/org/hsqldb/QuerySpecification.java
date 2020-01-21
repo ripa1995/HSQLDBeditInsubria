@@ -287,23 +287,11 @@ public class QuerySpecification extends QueryExpression {
 
         havingCondition   = e;
         havingColumnCount = 1;
-        populateHavingCondMaps(e);
+        Expression.populateMapsWithColumnNamesAndTableAlias(e,havingCondColumnNames,havingCondTablesAlias);
+
         havingCondJsonColumn = e.describeJSONminimal(null);
         havingCondJson = e.describeJSONlike(null);
 
-    }
-
-    //Populate maps with expression columns inside having condition
-    private void populateHavingCondMaps(Expression e) {
-        for(Expression expression: e.nodes){
-            if (expression.nodes!=null){
-                populateHavingCondMaps(expression);
-            }
-        }
-        if (e instanceof ExpressionColumn) {
-            havingCondColumnNames.put(((ExpressionColumn) e).columnName,((ExpressionColumn) e).columnName);
-            havingCondTablesAlias.put(((ExpressionColumn) e).columnName,((ExpressionColumn) e).tableName) ;
-        }
     }
 
     void addSortAndSlice(SortAndSlice sortAndSlice) {
