@@ -2877,7 +2877,7 @@ public class QuerySpecification extends QueryExpression {
             if (exprColumns[i].getType() == OpTypes.SIMPLE_COLUMN) {
                 index = exprColumns[i].columnIndex;
             }
-            sb.append("{\"COL").append(i).append("\":");
+            //sb.append("{\"COL").append(i).append("\":");
             temp = exprColumns[index].describeJSONminimal(session);
             sb.append(temp);
             /*sb.append(",\"NULLABLE\":");
@@ -2887,16 +2887,16 @@ public class QuerySpecification extends QueryExpression {
             } else {
                 sb.append("true");
             }*/
-            sb.append("}");
+            //sb.append("}");
         }
         sb.append("],\"RANGEVARIABLES\":[");
         for (int i = 0; i < rangeVariables.length; i++) {
             if(i>0){
                 sb.append(",");
             }
-            sb.append("{\"RV").append(i).append("\":");
+            //sb.append("{\"RV").append(i).append("\":");
             sb.append(rangeVariables[i].describeJSONminimal(session));
-            sb.append("}");
+            //sb.append("}");
             //Find full name for columns in havingCondition
             for(String havingColumnName: havingCondColumnNames.keySet()) {
                 String havingTableAlias = havingCondTablesAlias.get(havingColumnName);
@@ -2935,9 +2935,9 @@ public class QuerySpecification extends QueryExpression {
                 if (exprColumns[i].getType() == OpTypes.SIMPLE_COLUMN) {
                     index = exprColumns[i].columnIndex;
                 }
-                sb.append("{\"GC").append(i).append("\":");
+                //sb.append("{\"GC").append(i).append("\":");
                 sb.append(exprColumns[index].describeJSONminimal(session));
-                sb.append("}");
+                //sb.append("}");
             }
 
             sb.append("]");
@@ -2958,9 +2958,9 @@ public class QuerySpecification extends QueryExpression {
                 if(i>0){
                     sb.append(",");
                 }
-                sb.append("{\"EX").append(i).append("\":");
+                //sb.append("{\"EX").append(i).append("\":");
                 sb.append(((Expression) sortAndSlice.exprList.get(i)).describeJSONminimal(session));
-                sb.append("}");
+                //sb.append("}");
             }
             sb.append("]");
             /*sb.append(",\"USEINDEX\":");
