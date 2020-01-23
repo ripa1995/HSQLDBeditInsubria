@@ -1173,7 +1173,7 @@ public class RangeVariable {
         }
 
         sb.append("\"JOINTYPE\":\"").append(temp);
-        sb.append("\",\"TABLE\":\"").append(rangeTable.getName().name).append("\"");
+        sb.append("\",\"TABLE\":\"").append(rangeTable.getName().getSchemaQualifiedStatementName()).append("\"");
 
         if (tableAlias != null) {
             sb.append(",\"ALIAS\":\"").append(tableAlias.name).append("\"");
@@ -1246,7 +1246,7 @@ public class RangeVariable {
         }
 
         sb.append("\"JOINTYPE\":\"").append(temp);
-        sb.append("\",\"TABLE\":\"").append(rangeTable.getName().name).append("\"");
+        sb.append("\",\"TABLE\":\"").append(rangeTable.getName().getSchemaQualifiedStatementName()).append("\"");
 
         RangeVariableConditions[] conditions = joinConditions;
 
