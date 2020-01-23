@@ -287,7 +287,7 @@ public class QuerySpecification extends QueryExpression {
 
         havingCondition   = e;
         havingColumnCount = 1;
-        Expression.populateMapsWithColumnNamesAndTableAlias(e,havingCondColumnNames,havingCondTablesAlias);
+        e.populateMapsWithColumnNamesAndTableAlias(havingCondColumnNames,havingCondTablesAlias);
 
         havingCondJsonColumn = e.describeJSONminimal(null);
         havingCondJson = e.describeJSONlike(null);
