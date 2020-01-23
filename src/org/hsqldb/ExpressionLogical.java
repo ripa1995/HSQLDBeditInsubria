@@ -603,6 +603,10 @@ public class ExpressionLogical extends Expression {
                 sb.append(Tokens.T_IS).append(' ').append(Tokens.T_NULL);
                 break;
 
+            case OpTypes.IS_NOT_NULL :
+                sb.append(Tokens.T_IS).append(' ').append(Tokens.T_NOT).append(' ').append(Tokens.T_NULL);
+                break;
+
             case OpTypes.UNIQUE :
                 sb.append(Tokens.T_UNIQUE);
                 break;
@@ -2487,6 +2491,10 @@ public class ExpressionLogical extends Expression {
                 sb.append(Tokens.T_IS).append('_').append(Tokens.T_NULL);
                 break;
 
+            case OpTypes.IS_NOT_NULL :
+                sb.append(Tokens.T_IS).append('_').append(Tokens.T_NOT).append('_').append(Tokens.T_NULL);
+                break;
+
             case OpTypes.UNIQUE :
                 sb.append(Tokens.T_UNIQUE);
                 break;
@@ -2605,6 +2613,10 @@ public class ExpressionLogical extends Expression {
 
             case OpTypes.IS_NULL :
                 sb.append(Tokens.T_IS).append('_').append(Tokens.T_NULL);
+                break;
+
+            case OpTypes.IS_NOT_NULL :
+                sb.append(Tokens.T_IS).append('_').append(Tokens.T_NOT).append('_').append(Tokens.T_NULL);
                 break;
 
             case OpTypes.UNIQUE :
