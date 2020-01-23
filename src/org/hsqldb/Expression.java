@@ -2189,15 +2189,15 @@ public class Expression implements Cloneable {
     }
 
     //Populate maps with expression columns inside having condition
-    static protected void populateMapsWithColumnNamesAndTableAlias(Expression e, Map<String,String> columnNames, Map<String,String> tableAlias) {
-        for(Expression expression: e.nodes){
+    protected void populateMapsWithColumnNamesAndTableAlias(Map<String,String> columnNames, Map<String,String> tableAlias) {
+        for(Expression expression: this.nodes){
             if (expression.nodes!=null){
-                populateMapsWithColumnNamesAndTableAlias(expression,columnNames,tableAlias);
+                expression.populateMapsWithColumnNamesAndTableAlias(columnNames,tableAlias);
             }
         }
-        if (e instanceof ExpressionColumn) {
-            columnNames.put(((ExpressionColumn) e).columnName,((ExpressionColumn) e).columnName);
-            tableAlias.put(((ExpressionColumn) e).columnName,((ExpressionColumn) e).tableName) ;
+        if (this instanceof ExpressionColumn) {
+            columnNames.put(((ExpressionColumn) this).columnName,((ExpressionColumn) this).columnName);
+            tableAlias.put(((ExpressionColumn) this).columnName,((ExpressionColumn) this).tableName) ;
         }
     }
 
