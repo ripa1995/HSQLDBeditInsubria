@@ -75,6 +75,8 @@ public class AllTests extends TestCase {
         suite.addTestSuite(org.hsqldb.test.TestGroupByHaving.class);
         suite.addTestSuite(org.hsqldb.test.TestSqlPersistent.class);     // Sometimes hangs on Connection.close after SHUTDOWN problem
 
+        // Test for EXPLAIN JSON MINIMAL FOR statement
+        suite.addTestSuite(org.hsqldb.test.TestExplainJsonMinimal.class);
         return suite;
     }
 
