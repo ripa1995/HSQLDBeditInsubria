@@ -29,7 +29,7 @@ public class Test{
             importAdultDataset();
 
 
-            resultSet= statement.executeQuery("explain json minimal for SELECT AVG(TOTAL) as average,MAX(I.ID) as ID_IN,C.ID FROM INVOICE as I left join CUSTOMER as C on CUSTOMERID = C.ID WHERE TOTAL>200 GROUP BY C.ID having AVG(TOTAL)>200");
+            resultSet= statement.executeQuery("explain json minimal for SELECT * from adult");
 
 
             while (resultSet.next()){
@@ -47,12 +47,12 @@ public class Test{
     private static void importAdultDataset() throws SQLException, IOException {
         statement.execute("create table if not exists adult(age int, "
                 + "workclass VARCHAR(50), " + "fnlwgt int, "
-                + "education VARCHAR(50), " + "education.num int, "
-                + "marital.status VARCHAR(50), " + "occupation VARCHAR(50), "
+                + "education VARCHAR(50), " + "educationNum int, "
+                + "maritalStatus VARCHAR(50), " + "occupation VARCHAR(50), "
                 + "relationship VARCHAR(50), " + "race VARCHAR(50), "
-                + "sex VARCHAR(50), " + "capital.gain int, "
-                + "capital.loss int, " + "hours.per.week int, "
-                + "native.country VARCHAR(50), " + "income VARCHAR(50))");
+                + "sex VARCHAR(50), " + "capitalGain int, "
+                + "capitalLoss int, " + "hoursPerWeek int, "
+                + "nativeCountry VARCHAR(50), " + "income VARCHAR(50))");
         ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) FROM adult");
         resultSet.next();
         if (resultSet.getInt(1)==0) {
