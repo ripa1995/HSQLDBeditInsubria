@@ -31,7 +31,7 @@ public class MainMasterThesis{
             statement = (JDBCStatement) c.createStatement();
             importAdultDataset();
 
-            String query = "select top 2 'a' from adult";
+            String query = "select top 2 age from adult";
             String fileName = "test2";
             printResultToFile(statement.executeQuery("explain json minimal for "+query),fileName,".json");
             printResultToFile(statement.executeQuery(query),fileName,".csv");
@@ -47,10 +47,17 @@ public class MainMasterThesis{
         ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
         int columnCount = resultSetMetaData.getColumnCount();
         ArrayList<String> arrayList = new ArrayList<String>();
+        StringBuilder stringBuilder = new StringBuilder();
+        if(extension.equals(".csv")) {
+            for (int i = 1; i <= columnCount; i++) {
+                stringBuilder.append(resultSetMetaData.getColumnName(i)).append(",");
+            }
+            arrayList.add(stringBuilder.substring(0, stringBuilder.length() - 1) + "\n");
+        }
         while (resultSet.next()){
-            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder = new StringBuilder();
             for(int i=1;i<=columnCount;i++){
-                stringBuilder.append(((String) resultSet.getObject(i))).append(",");
+                stringBuilder.append(resultSet.getObject(i)).append(",");
             }
             arrayList.add(stringBuilder.substring(0,stringBuilder.length()-1)+"\n");
         }
