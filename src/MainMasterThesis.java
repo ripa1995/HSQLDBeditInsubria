@@ -1,14 +1,17 @@
 import org.hsqldb.Statement;
 import org.hsqldb.jdbc.JDBCStatement;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.stream.Stream;
 
-public class Test{
+public class MainMasterThesis{
 
 
     private static JDBCStatement statement;
@@ -28,20 +31,36 @@ public class Test{
             statement = (JDBCStatement) c.createStatement();
             importAdultDataset();
 
-
-            resultSet= statement.executeQuery("explain json minimal for SELECT * from adult");
-
-
-            while (resultSet.next()){
-                System.out.println(resultSet.getObject(1).toString());
-            }
-
+            String query = "select top 2 'a' from adult";
+            String fileName = "test2";
+            printResultToFile(statement.executeQuery("explain json minimal for "+query),fileName,".json");
+            printResultToFile(statement.executeQuery(query),fileName,".csv");
 
             c.close();
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
 
+    }
+
+    private static void printResultToFile(ResultSet resultSet, String fileName,String extension) throws SQLException, IOException {
+        ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+        int columnCount = resultSetMetaData.getColumnCount();
+        ArrayList<String> arrayList = new ArrayList<String>();
+        while (resultSet.next()){
+            StringBuilder stringBuilder = new StringBuilder();
+            for(int i=1;i<=columnCount;i++){
+                stringBuilder.append(((String) resultSet.getObject(i))).append(",");
+            }
+            arrayList.add(stringBuilder.substring(0,stringBuilder.length()-1)+"\n");
+        }
+        File dir = new File("./results");
+        dir.mkdirs();
+        File file = new File(dir,fileName+extension);
+        FileOutputStream fileOutputStream = new FileOutputStream(file,true);
+        for (String s1:arrayList) {
+            fileOutputStream.write(s1.getBytes());
+        }
     }
 
     private static void importAdultDataset() throws SQLException, IOException {
@@ -57,7 +76,7 @@ public class Test{
         resultSet.next();
         if (resultSet.getInt(1)==0) {
             Stream st = Files.lines(Paths.get("./data/adult.csv"));
-            st.forEach(Test::addAdult);
+            st.forEach(MainMasterThesis::addAdult);
         }
     }
 
